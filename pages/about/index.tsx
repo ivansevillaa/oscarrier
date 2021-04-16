@@ -1,12 +1,12 @@
 import { GetServerSidePropsContext } from "next";
 import useTranslation from "next-translate/useTranslation";
-import { Heading } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 
-export default function Home() {
-  const { t } = useTranslation("home");
+export default function About() {
+  const { t } = useTranslation("about");
 
   return (
-    <Heading as="h1">{t("title")}</Heading>
+    <Text>{t("greeting")}</Text>
   );
 }
 

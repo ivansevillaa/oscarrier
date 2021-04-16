@@ -2825,6 +2825,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+next-translate@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/next-translate/-/next-translate-1.0.5.tgz#0c48d25ab4bc05ed1cd8c24f03d95cd9b36e184a"
+  integrity sha512-DD9vsY6/7XYlaOhlJRQvT2TD5joif2x047TZwVPMg5wXBbdach+ryAfBdxEpq4i1tksi/u6ul1/TcSXfpgklIw==
+
 next@^10.1.3:
   version "10.1.3"
   resolved "https://registry.yarnpkg.com/next/-/next-10.1.3.tgz"
