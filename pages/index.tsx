@@ -1,20 +1,9 @@
-import { Button, useColorMode } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
+import { Heading } from "@chakra-ui/react";
 
 export default function Home() {
-  const { colorMode, toggleColorMode } = useColorMode();
-
   return (
-    <>
-      <header>
-        <Button onClick={toggleColorMode}>
-          Toggle
-          {" "}
-          {colorMode === "light" ? "Dark" : "Light"}
-        </Button>
-      </header>
-      <h1>Home Page</h1>
-    </>
+    <Heading as="h1">Home Page</Heading>
   );
 }
 

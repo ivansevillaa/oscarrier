@@ -21,7 +21,7 @@ module.exports = {
   ],
   rules: {
     "comma-dangle": [2, "never"],
-    eqeqeq: [2, "smart"],
+    eqeqeq: 0,
     "import/no-unresolved": 0,
     "react/jsx-filename-extension": [2, { extensions: [".tsx"] }],
     "react/jsx-props-no-spreading": [2, { exceptions: ["Component"] }],
