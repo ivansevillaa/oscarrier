@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-
 import {
   ChakraProvider,
   cookieStorageManager,
   localStorageManager
 } from "@chakra-ui/react";
+import theme from "@theme/index";
 
 interface Props {
   cookies?: string;
@@ -17,7 +17,7 @@ export default function Chakra({ cookies, children }: Props) {
     : localStorageManager;
 
   return (
-    <ChakraProvider colorModeManager={colorModeManager}>
+    <ChakraProvider theme={theme} colorModeManager={colorModeManager}>
       {children}
     </ChakraProvider>
   );

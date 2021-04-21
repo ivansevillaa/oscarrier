@@ -30,6 +30,7 @@
       "@utils/*": ["./utils/*"],
       // "@app/*": ["./app/*"],
       // "@assets/*": ["./assets/*"]
+      "@theme/*": ["./theme/*"]
     }
   },
   "include": [

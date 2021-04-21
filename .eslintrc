@@ -22,6 +22,9 @@
   "rules": {
     "comma-dangle": [2, "never"],
     "eqeqeq": 0,
+    "import/extensions": [2, {
+      "ts": "always"
+    }],
     "import/no-unresolved": 0,
     "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": [2, { "exceptions": ["Component"] }],
