@@ -1,7 +1,8 @@
 import { GetServerSidePropsContext } from "next";
 import useTranslation from "next-translate/useTranslation";
-import { Heading, chakra } from "@chakra-ui/react";
+import { Heading } from "@chakra-ui/react";
 import Card from "@components/Card";
+import PostList from "@components/PostList";
 
 export default function Home() {
   const { t } = useTranslation("home");
@@ -12,16 +13,11 @@ export default function Home() {
   return (
     <>
       <Heading as="h1">{t("title")}</Heading>
-      {/* TODO: add this chakra.section to a PostList component */}
-      <chakra.section
-        display="flex"
-        gridGap="10"
-        flexWrap="wrap"
-      >
+      <PostList>
         {BLOG_POSTS.map((post, index) => (
           <Card post={post} variant={index == 0 ? "wide" : "default"} />
         ))}
-      </chakra.section>
+      </PostList>
     </>
   );
 }
