@@ -14,8 +14,7 @@ export default function Layout({ children }: Props) {
       margin="0 auto"
       maxWidth="1140px"
       minHeight="100vh"
-      // TODO: remove padding for desktop view
-      paddingX="4"
+      paddingX={{ base: "4", xl: 0 }}
     >
       <Header />
       <chakra.main flexGrow={1}>
