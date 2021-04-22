@@ -1,29 +1,31 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
+import LanguageSelector from "@components/LanguageSelector";
+import { chakra, List, ListItem } from "@chakra-ui/react";
 
 export default function Footer() {
-  const { locales, asPath } = useRouter();
   const { t } = useTranslation("common");
 
   return (
-    <footer>
-
-      <ul>
-        <li>
+    <chakra.footer
+      alignItems="center"
+      display="flex"
+      flexDirection={{ base: "column", sm: "row" }}
+      gridGap="6"
+      justifyContent={{ base: "center", sm: "space-between" }}
+      marginTop="12"
+    >
+      <List
+        display="flex"
+        gridGap="4"
+      >
+        <ListItem>
           <a href="https://twitter.com/oscarrier" target="_blank" rel="noreferrer">{t("twitter")}</a>
-        </li>
-        <li>
+        </ListItem>
+        <ListItem>
           <a href="https://github.com/ivansevillaa" target="_blank" rel="noreferrer">{t("github")}</a>
-        </li>
-        { locales?.map((locale) => (
-          <li key={locale}>
-            <Link href={asPath} locale={locale} passHref>
-              <a href="replace">{t(`${locale}`)}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </footer>
+        </ListItem>
+      </List>
+      <LanguageSelector />
+    </chakra.footer>
   );
 }
