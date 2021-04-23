@@ -6,7 +6,7 @@ import {
 interface Props {
   // TODO: update this prop when the integration with cms happen
   post: string;
-  variant?: string;
+  variant?: "wide" | "default";
 }
 
 export default function Card({ post, variant }: Props) {
