@@ -1,8 +1,10 @@
 import { GetServerSidePropsContext } from "next";
 import useTranslation from "next-translate/useTranslation";
-import { Heading } from "@chakra-ui/react";
 import Card from "@components/Card";
+import Hero from "@components/Hero";
 import PostList from "@components/PostList";
+
+const PROFILE_SRC = "/images/profile.jpg";
 
 export default function Home() {
   const { t } = useTranslation("home");
@@ -12,7 +14,12 @@ export default function Home() {
 
   return (
     <>
-      <Heading as="h1">{t("title")}</Heading>
+      <Hero
+        image={PROFILE_SRC}
+        alt={t("alt")}
+        title={t("title")}
+        description={t("description")}
+      />
       <PostList>
         {BLOG_POSTS.map((post, index) => (
           <Card post={post} variant={index == 0 ? "wide" : "default"} />
