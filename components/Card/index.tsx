@@ -1,45 +1,42 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   chakra, Box, Heading, Text, useMultiStyleConfig
 } from "@chakra-ui/react";
+import { format } from "date-fns";
+import { PostMetadata } from "@ts/post";
+import { CardVariantType } from "@ts/card";
 
 interface Props {
-  // TODO: update this prop when the integration with cms happen
-  post: string;
-  variant?: "wide" | "default";
+  post: PostMetadata;
+  variant: CardVariantType;
 }
 
 export default function Card({ post, variant }: Props) {
   const styles = useMultiStyleConfig("Card", { variant });
   const NextImage = chakra(Image);
 
-  // TODO: use real data
   return (
     <chakra.article __css={styles.article}>
-      <Box __css={styles.imageWrapper}>
-        <NextImage
-          src="http://sigdeletras.com/images/blog/202004_react_leaflet/react.png"
-          alt="post picture"
-          layout="fill"
-          objectFit="cover"
-          __css={styles.image}
-        />
-      </Box>
-      <Box __css={styles.infoWrapper}>
-        <chakra.small fontSize="sm">January 18, 2021</chakra.small>
-        <Heading fontSize="3xl" marginBottom="3">Super interesting title</Heading>
-        <Text>
-          Lorem ipsum, dolor sit amet consectetur
-          adipisicing elit. Mollitia asperiores dolore
-          repellat eos commodi. Harum maxime a eaque suscipit.
-          Harum quo pariatur nemo iusto tempora, nihil ad fuga unde porro.
-          {post}
-        </Text>
-      </Box>
+      <Link href={`/blog/${post.slug}`} passHref>
+        <chakra.a href="replace" __css={styles.anchor}>
+          <Box __css={styles.imageWrapper}>
+            <NextImage
+              src={post.cover}
+              alt="post picture"
+              layout="fill"
+              objectFit="cover"
+              __css={styles.image}
+            />
+          </Box>
+          <Box __css={styles.infoWrapper}>
+            {/* TODO: add locale for date and create a Date component */}
+            <chakra.small fontSize="sm">{format(new Date(post.date), "MMMM d, y")}</chakra.small>
+            <Heading fontSize="3xl" marginBottom="3">{post.title}</Heading>
+            <Text>{post.summary}</Text>
+          </Box>
+        </chakra.a>
+      </Link>
     </chakra.article>
   );
 }
-
-Card.defaultProps = {
-  variant: "default"
-};

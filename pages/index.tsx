@@ -1,16 +1,18 @@
-import { GetServerSidePropsContext } from "next";
+import { GetStaticPropsContext } from "next";
 import useTranslation from "next-translate/useTranslation";
 import Card from "@components/Card";
 import Hero from "@components/Hero";
 import PostList from "@components/PostList";
+import { getAllFilesFrontMatter } from "@utils/mdx";
+import { PostMetadata } from "@ts/post";
+import PROFILE_SRC from "./constants";
 
-const PROFILE_SRC = "/images/profile.jpg";
+interface Props {
+  posts: Array<PostMetadata>
+}
 
-export default function Home() {
+export default function Home({ posts }: Props) {
   const { t } = useTranslation("home");
-
-  // TODO: remove this with the integration
-  const BLOG_POSTS = ["Post 1", "Post 2", "Post 3", "Post 4", "Post 5", "Post 6"];
 
   return (
     <>
@@ -21,18 +23,20 @@ export default function Home() {
         description={t("description")}
       />
       <PostList>
-        {BLOG_POSTS.map((post, index) => (
-          <Card post={post} variant={index == 0 ? "wide" : "default"} />
+        {posts.map((post, index) => (
+          <Card key={post.slug} post={post} variant={index == 0 ? "wide" : "default"} />
         ))}
       </PostList>
     </>
   );
 }
 
-export function getServerSideProps({ req }: GetServerSidePropsContext) {
+export async function getStaticProps({ locale }: GetStaticPropsContext) {
+  const posts = await getAllFilesFrontMatter(locale);
+
   return {
     props: {
-      cookies: req.headers.cookie ?? ""
+      posts
     }
   };
 }

@@ -20,17 +20,9 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["./components/*"],
-      // "@api/*": ["./api/*"],
-      // "@hooks/*": ["./hooks/*"],
-      // "@services/*": ["./services/*"],
-      // "@constants": ["./constants.ts"],
-      // "@context/*": ["./context/*"],
-      // "@generated/*": ["./generated/*"],
-      // "@public/*": ["./public/*"],
       "@utils/*": ["./utils/*"],
-      // "@app/*": ["./app/*"],
-      // "@assets/*": ["./assets/*"]
-      "@theme/*": ["./theme/*"]
+      "@theme/*": ["./theme/*"],
+      "@ts/*": ["./types/*"]
     }
   },
   "include": [

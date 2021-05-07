@@ -2,8 +2,8 @@ const nextTranslate = require("next-translate");
 
 module.exports = {
   ...nextTranslate(),
-  // TODO: remove this in the integration with the cms
+  // TODO: remove this in the creation of the post
   images: {
-    domains: ["sigdeletras.com"]
+    domains: ["sigdeletras.com", "res.cloudinary.com"]
   }
 };

@@ -2,7 +2,7 @@ import { ThemeComponentProps } from "@chakra-ui/react";
 import { mode } from "@chakra-ui/theme-tools";
 
 const Card = {
-  parts: ["article", "imageWrapper", "image", "infoWrapper"],
+  parts: ["article", "anchor", "imageWrapper", "image", "infoWrapper"],
   baseStyle: (props: ThemeComponentProps) => ({
     article: {
       bg: mode("white", "gray.700")(props),
@@ -17,6 +17,9 @@ const Card = {
       _hover: {
         transform: "scale(1.01)"
       }
+    },
+    anchor: {
+      display: "flex"
     },
     imageWrapper: {
       position: "relative"
@@ -35,6 +38,10 @@ const Card = {
         flexBasis: "300px",
         flexDirection: "column"
       },
+      anchor: {
+        flexDirection: "column",
+        height: "100%"
+      },
       imageWrapper: {
         height: "200px"
       },
@@ -50,6 +57,10 @@ const Card = {
       article: {
         flexBasis: { base: "300px", md: "100%" },
         flexDirection: { base: "column", md: "row" }
+      },
+      anchor: {
+        flexDirection: { base: "column", md: "row" },
+        width: "100%"
       },
       imageWrapper: {
         flex: { md: "1 1 auto" },
