@@ -5,7 +5,7 @@ import Hero from "@components/Hero";
 import PostList from "@components/PostList";
 import { getAllFilesFrontMatter } from "@utils/mdx";
 import { PostMetadata } from "@ts/post";
-import PROFILE_SRC from "./constants";
+import PROFILE_SRC from "../constants/global";
 
 interface Props {
   posts: Array<PostMetadata>
