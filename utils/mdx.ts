@@ -1,5 +1,7 @@
+/* eslint-disable global-require */
 import fs from "fs";
 import matter from "gray-matter";
+import mdxPrism from "mdx-prism";
 import renderToString from "next-mdx-remote/render-to-string";
 import MDXComponents from "@components/MDXComponents";
 import { Path, PostMetadata, SlugType } from "@ts/post";
@@ -37,7 +39,20 @@ export async function getFileBySlug(slug: SlugType, locale?: string) {
 
   const { content, data } = matter(src);
 
-  const mdxSource = await renderToString(content, { components: MDXComponents, scope: data });
+  const mdxSource = await renderToString(content, {
+    components: MDXComponents,
+    mdxOptions: {
+      remarkPlugins: [
+        require("remark-autolink-headings"),
+        require("remark-slug"),
+        require("remark-code-titles")
+      ],
+      rehypePlugins: [
+        mdxPrism
+      ]
+    },
+    scope: data
+  });
 
   return {
     source: mdxSource,

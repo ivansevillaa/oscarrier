@@ -4,7 +4,7 @@ import {
   cookieStorageManager,
   localStorageManager
 } from "@chakra-ui/react";
-import theme from "@theme/index";
+import theme from "styles/index";
 
 interface Props {
   cookies?: string;
