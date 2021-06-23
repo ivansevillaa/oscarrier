@@ -1,3 +1,6 @@
 {
-  "author": "Ivan Sevilla - {{date}}"
+  "author": "Ivan Sevilla - {{date}}",
+  "discussTw": "Discuss on Twitter",
+  "edit": "Edit on GitHub",
+  "shareTw": "Share article on Twitter"
 }
