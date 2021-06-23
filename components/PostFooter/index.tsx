@@ -8,7 +8,7 @@ function generateDiscussUrl(slug: string) {
   // TODO: move this to a constant o .env file
   return `https://twitter.com/search?q=${encodeURIComponent(
     // TODO: maybe is better pass the route as params using useRouter
-    `https://oscarrier.vercel.app/${slug}`
+    `https://oscarrier.vercel.app/blog/${slug}`
   )}`;
 }
 
@@ -61,7 +61,7 @@ function PostFooter({ slug, title }: Props) {
       {/* TODO: use useRouter, move via to a constant */}
       {/* TODO: add styles */}
       <TwitterShare
-        url={`https://oscarrier.vercel.app/${slug}`}
+        url={`https://oscarrier.vercel.app/blog/${slug}`}
         title={title}
         via="oscarrier"
         resetButtonStyle={false}
