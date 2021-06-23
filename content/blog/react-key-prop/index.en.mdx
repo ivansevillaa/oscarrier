@@ -1,0 +1,151 @@
+---
+title: "The React's key prop Importance"
+date: "2021-06-23"
+summary: "The key is not about silence the console warning when you render a list. Is about understand what the warning is about and the performance problems or bugs that you could cause if you don't know what happens under the hood."
+cover: "/images/react-key-prop.jpg"
+slug: "react-key-prop"
+---
+
+I assume you know how to transform a list in JavaScript, but here is an example using the [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) method:
+
+```jsx
+const fruits = [
+    { id: "1", name: "Apple", price: 2 },
+    { id: "2", name: "Orange", price: 7 },
+    { id: "3", name: "Banana", price: 5 },
+];
+
+const fruitsMoreExpensive = fruits.map(fruit => {
+    return {...fruit, price: fruit.price * 2}
+});
+
+console.log(fruits);
+console.log(fruitsMoreExpensive);
+```
+
+If we want to render the name of each fruit with its price, transform this array to a list of react elements is a similar task:
+
+```jsx
+function Fruits({ fruits }) {
+  return (
+    <ul>
+      {fruits.map((fruit) => (
+        <li>
+          <p>{fruit.name}</p>
+          <small>${fruit.price}</small>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+If you try this and ten open the console, you'll see a warning saying that `Each child in a list should have a unique "key" prop.`
+
+```jsx
+{fruits.map((fruit) => (
+	<li>
+	  <p>{fruit.name}</p>
+	  <small>${fruit.price}</small>
+	</li>
+))}
+```
+
+This is simple to fix. We just have to add the `key prop`.
+
+```jsx
+{fruits.map((fruit) => (
+	<li key={fruit.id}>
+	  <p>{fruit.name}</p>
+	  <small>${fruit.price}</small>
+	</li>
+))}
+```
+
+Keys help React identify which items have changed, are added, or are removed. Keys should be given to the elements inside the array to give the elements a stable identity.
+
+The best way to pick a key is to use a string that uniquely identifies a list item among its siblings. Often you would use IDs from your data as keys like we did before with the fruit example.
+
+Another option, if you haven't got IDs, is using the index as a key. But this option should be the last resort. 
+
+```jsx
+{fruits.map((fruit, index) => (
+	<li key={index}>
+	  <p>{fruit.name}</p>
+	  <small>${fruit.price}</small>
+	</li>
+))}
+```
+
+Should be the last resort because the only that we are solving is hiding the warning. But that's not the real purpose. The real purpose would be one or two, depending on what are you doing. If you aren't managing a state you'll have just a performance problem. But in the case you are managing a state, you'll have a performance problem and a really interesting bug that we'll see later in this post.
+
+## Reconciliation
+
+Without using keys or using an index as keys recursing on the children of a DOM node, React just iterates over both lists of children at the same time and generates a mutation whenever there’s a difference. If we add an element to the last of the list, we have no problems because react compare, the first with first and match, the second with the second and match, etc until we add the new item and react, insert the element without problems.
+
+```jsx
+<ul>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+
+<ul>
+  <li>Banana</li>
+  <li>Orange</li>
+  <li>Apple</li>
+</ul>
+```
+
+But if you insert an element at the beginning has a worse performance because react mutate every child instead of keeping the existing elements.
+
+```jsx
+<ul>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+
+<ul>
+  <li>Apple</li>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+```
+
+To solve this performance issue we need to use a key because when children have keys, use the key to match children in the original tree with children in the subsequent tree. So, adding a unique key react can make the conversion efficiency.
+
+```jsx
+<ul>
+  <li key="banana">Banana</li>
+  <li key="orange">Orange</li>
+</ul>
+
+<ul>
+  <li key="apple">Apple</li>
+  <li key="banana">Banana</li>
+  <li key="orange">Orange</li>
+</ul>
+```
+
+Now React knows that the element with the key 'apple' is the new one, and the elements with the keys 'banana' and 'orange' have just moved.
+
+Generally, you have a unique key because the item that you'll display already has an id, so you should use that ID as a key. If that's not the case I recommend you assign one. And as a last resort, you can pass an item’s index in the array as a key. This can work well if the items are never reordered because reorders will be slow for the explained above.
+
+Now, if you are working with the state, you have to work with IDs as keys, other way you'll have issues because children's instances are updated and reused bases on their key and if the key is an index, moving an item changes it. As a result, the state for things like uncontrolled inputs for example gets mixed up and updated in an unexpected way. 
+
+Prove that by yourself, play around with the next examples. The first one, type something in the input after that add a new input at the end:
+
+<IndexKeyToTheEnd />
+
+The input was added at the end, and the content wrote in the first input has nothing strange so that has no problems for the explained above. Now, try to type something and add a new input at the beginning:
+
+<IndexKeyToStart />
+
+That is about what I referred to, that happens when you don't use keys or use the index as keys and the list is reordered. Now try the same but using unique keys:
+
+<IDKeyToStart />
+
+You see? the unique key avoids this issue because react uses the key to match children in the original tree with children in the subsequent tree. I let you the code in this [codesandbox](https://codesandbox.io/s/react-lists-and-keys-smxjk?file=/index.html) to play around with it.
+
+## Conclusion
+
+You must use IDs as keys but if you are confident that the list has not to be reordered, and you haven't got an ID, so you can choose to use index as keys, but please index should be your last option and keep in mind the concepts that you saw in this post.

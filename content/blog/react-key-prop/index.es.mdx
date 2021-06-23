@@ -1,0 +1,151 @@
+---
+title: "La Importancia de la prop key en React"
+date: "2021-06-23"
+summary: "La prop key no se trata de silenciar la advertencia en la consola cuando renderizas una lista. Se trata de entender a que se refiere la advertencia y que problemas de rendimiento o bugs puedes causar si no sabes bien que ocurre por debajo."
+cover: "/images/react-key-prop.jpg"
+slug: "react-key-prop"
+---
+
+Asumo que sabes como transformar una lista en JavaScript, pero aca hay un ejemplo usando el método [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map):
+
+```jsx
+const fruits = [
+    { id: "1", name: "Apple", price: 2 },
+    { id: "2", name: "Orange", price: 7 },
+    { id: "3", name: "Banana", price: 5 },
+];
+
+const fruitsMoreExpensive = fruits.map(fruit => {
+    return {...fruit, price: fruit.price * 2}
+});
+
+console.log(fruits);
+console.log(fruitsMoreExpensive);
+```
+
+Si queremos renderizar el nombre de cada fruta con su precio, transformar este array a una lista de elementos de react es una tarea similar:
+
+```jsx
+function Fruits({ fruits }) {
+  return (
+    <ul>
+      {fruits.map((fruit) => (
+        <li>
+          <p>{fruit.name}</p>
+          <small>${fruit.price}</small>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+Si intentas hacer esto y luego abris tu consola, vas a ver una advertencia diciendo `Each child in a list should have a unique "key" prop.` (Cada hijo en una lista deberia tener una unica prop "key")
+
+```jsx
+{fruits.map((fruit) => (
+	<li>
+	  <p>{fruit.name}</p>
+	  <small>${fruit.price}</small>
+	</li>
+))}
+```
+
+Esto es simple de arreglar, solo tenemos que agregar la `prop key`
+
+```jsx
+{fruits.map((fruit) => (
+	<li key={fruit.id}>
+	  <p>{fruit.name}</p>
+	  <small>${fruit.price}</small>
+	</li>
+))}
+```
+
+Las keys ayudan a React a identificar cuales elementos cambiaron, fueron agregados o fueron eliminados. Las keys deberian ser dadas a los elementos dentro de un array para darle identidad a estos mismos.
+
+La mejor forma de seleccionar una key es usar un string único que identifica un elemento de una lista entre sus hermanos. Generalmente vas a querer usar los IDs de tus datos como key, asi como hicimos antes con el ejemplo de las frutas. 
+
+Otra opción, si no tenes IDs, es usar un índice como key. Pero esta debería ser tu última opción.
+
+```jsx
+{fruits.map((fruit, index) => (
+	<li key={index}>
+	  <p>{fruit.name}</p>
+	  <small>${fruit.price}</small>
+	</li>
+))}
+```
+
+Debería ser tu última opción porque haciendoe esto lo único que estamos solucionando es ocultar la advertencia. Pero este no es el própisto de la prop key. El verdadero propósito puede ser uno o dos, dependiendo que estas haciendo. Si no estas manejando un estado, solo vas a tener un problema de rendimiento. Pero en caso de que manejes un estado, vas a tener un problema de rendimiento y sumado a este un bug bastante interesante que lo vamos a ver más adelante en este artículo.
+
+## Reconciliation
+
+Sin usar keys o usando índices como keys hacer la recursión sobre los hijos de un nodo del DOM, React va a iterar ambas listas de hijos al mismo tiempo y generar una mutación donde sea que exista una diferencia. Si agregas un elemento al final de la lista, no tenemos problemas porque react compara, el primero con el primero y coincide, el segundo con el segundo y coincide, etc hasta que agregamos el nuevo elemento y react inserta el elemento sin problemas.
+
+```jsx
+<ul>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+
+<ul>
+  <li>Banana</li>
+  <li>Orange</li>
+  <li>Apple</li>
+</ul>
+```
+
+Pero si insertas un elemento al principio tiene un problema de rendimiento porque react debe mutar `cada hijo` en lugar de mantener los ya existentes.
+
+```jsx
+<ul>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+
+<ul>
+  <li>Apple</li>
+  <li>Banana</li>
+  <li>Orange</li>
+</ul>
+```
+
+Para solucionar este problema de rendimiento necesitamos usar una key porque cuando los hijos tienen keys, usan esa key para coincidir el hijo del árbol original con el hijo del árbol subsecuente. Entonces, agregando una key única podemos hacer la conversión eficientemente.
+
+```jsx
+<ul>
+  <li key="banana">Banana</li>
+  <li key="orange">Orange</li>
+</ul>
+
+<ul>
+  <li key="apple">Apple</li>
+  <li key="banana">Banana</li>
+  <li key="orange">Orange</li>
+</ul>
+```
+
+Ahora React sabe que el elemento con la key 'apple' es el nuevo, y los elementos con la key 'banana' y 'naranja' solo fueron desplazados.
+
+Generalmente, tenes una key única porque el elemento que vamos a mostrar ya posee un id, entonces solo deberías usar ese ID como key. Si este no es tu caso entonces te recomiendo asignarle un ID. Y como última opción, podes pasarle el índice del elemento en el array como key. Esto puede funcionar bien si los elementos nunca son reordenados, porque reordenarlos será lento por lo que ya explicamos anteriormente. 
+
+Ahora, si estamos trabajando con estados, tenes que usar IDs como keys, de otra forma vas a tener problemas porque las instancias de los hijos son actualizadas y reusada en base a su key y si su key es un índice, mover el elemento cambia a ese índice. Como resultado, el estado para cosas como imputs no controlados por ejemplo se mezclarian y actualizarían de una forma inesperada.
+
+Probá esto por vos mismo, jugá con los siguientes ejemplos. El primero, escribí algo en el input, despues de esto agregá un nuevo input al final:
+
+<IndexKeyToTheEnd />
+
+El input fue agregado al final, y el contenido escrito en el primer input no tiene nada extraño asi que esto no tiene problemas por lo explicado arriba. Ahora, intentá escrbir algo y agregar un nuevo input al principio de la lista:
+
+<IndexKeyToStart />
+
+Esto es a lo que me refiero, esto ocurre cuando no usamos keys o usamos índices como keys y la lista es reordenada. Entonces intentá lo mismo pero usando keys únicas
+
+<IDKeyToStart />
+
+¿Viste? la key única evita este problema porque react la usa para coincidir el hijo del árbol original con el hijo del árbol subsecuente. Te dejo el código en este [codesandbox](https://codesandbox.io/s/react-lists-and-keys-smxjk?file=/index.html) para que juegues un poco con él.
+
+## Conclusiones
+
+Deberías usar IDs como keys pero si estás seguro de que la lista no será reordenada, y no tenes un ID, entonces podes elegir usar índices como keys, pero por favor, los índices deberían de ser tu última opción y tené en cuenta los conceptos que viste en este post.

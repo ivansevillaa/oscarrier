@@ -24,6 +24,9 @@ export default function Footer() {
         <ListItem>
           <a href="https://github.com/ivansevillaa" target="_blank" rel="noreferrer">{t("github")}</a>
         </ListItem>
+        <ListItem>
+          <a href="https://www.buymeacoffee.com/oscarrier" target="_blank" rel="noreferrer">{t("coffee")}</a>
+        </ListItem>
       </List>
       <LanguageSelector />
     </chakra.footer>
