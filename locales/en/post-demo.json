@@ -1,5 +1,12 @@
 {
   "toEndBtn": "Add to end",
   "toStartBtn": "Add to start",
-  "removeAll": "Remove all"
+  "removeAll": "Remove all",
+  "somethingWrong": "Something went wrong",
+  "fallbackUIMessage": "(This is the fallback UI 😅)",
+  "tryAgain": "Try again",
+  "letsPlay": "Let's play",
+  "breakBtn": "Break app",
+  "breakDescription": "Press the button and break the whole app",
+  "breakErrorMessge": "We broke the app 🤦‍♂️"
 }

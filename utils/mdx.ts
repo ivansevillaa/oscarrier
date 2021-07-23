@@ -67,7 +67,7 @@ export async function getAllFilesFrontMatter(locale?: string) {
 
   const files = await getFiles();
 
-  return files.reduce((allPosts: Array<PostMetadata>, postSlug: string) => {
+  const disordedFiles = files.reduce((allPosts: Array<PostMetadata>, postSlug: string) => {
     const fileToRead = `content/blog/${postSlug}/index.${locale}.mdx`;
 
     if (!fs.existsSync(fileToRead)) {
@@ -85,4 +85,9 @@ export async function getAllFilesFrontMatter(locale?: string) {
       ...allPosts
     ];
   }, []);
+
+  const orderedFiles = disordedFiles.sort((a, b) => (
+    Number(new Date(b.date)) - Number(new Date(a.date))));
+
+  return orderedFiles;
 }

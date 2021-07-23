@@ -1,0 +1,246 @@
+---
+title: "Evita Romper tu React App usando Error Boundaries"
+date: "2021-07-23"
+summary: "Evitar errores es muy díficil, los errores están ahí todo el tiempo. Pero usando Errores Boundaries podemos manejar estos errores para brindar una mejor experiencia de usuario."
+cover: "/images/react-error-boundary.jpg"
+slug: "react-error-boudary"
+---
+
+Cuando creamos aplicaciones damos lo mejor de nosotros para evitar cometer errores así no rompemos la app entera. Pero esto es muy difícil, por no decir imposible, los errores van a estar ahí y van a romper nuestra app. Por lo tanto debemos atrapar estos errores y desencadenar una vista fallback para protegernos.
+
+## Try/catch
+
+Si estás trabajando con javascript y tenés que manejar un error, capaz que lo primero que se te venga a la mente sea usar un bloque try/catch y eso es genial **pero solo funciona para código imperativo o imperative code:** 
+
+```jsx
+const getMovies = () => {
+  try {
+    const response = await fetch('http://example.com/movies.json');
+    handleResponse(response);
+  } catch(error) {
+    handleError(error);
+  }
+}
+```
+
+Y como probablemente sabes, los componentes de react son **código declarativo o declarative code:**
+
+```jsx
+function App() {
+  try {
+    return (
+      <>
+        <Header />
+        <Movies>
+          <Movie />
+        </Movies>
+        <Footer />
+      </>
+    )
+  } catch(error) {
+    <ErrorFallback error={error} />
+  }
+}
+```
+
+Entonces si usas un bloque try/catch conteniendo el contenido de tu aplicación, vas a mostrar tu Fallback UI si la App tiene un error. Pero si un componente dentro de App tiene un error, vas a mostrar una pantalla en blanco. Porque no estamos llamando a Header, Movies o Footer. Solo estamos creando elementos de react.
+
+Entonces... ¿Cómo podemos mostrar un Fallback UI cuando aparece un error? Bueno, la respuesta es **error boundaries**
+
+## Error boundary
+
+Error boundaries son componentes de React que atrapan errores de JavaScript de uno de sus componentes hijos, loguea esos errores, y muestra un FallbackUI en lugar de una pantalla en blanco. Error boundaries atrapan errores durante el renderizado, métodos de ciclo de vida y constructores dentro de todo el árbol de componentes debajo de él.
+
+Necesitamos un componente de clase para crear un error boundary y definir <Highlighted text="getDerivedStateFromError" /> o <Highlighted text="componentDidCatch" /> (o ambos). La regla es que  getDerivedStateFromError debería ser usado para renderizar nuestro Fallback UI y componentDidCatch para loguear el error.
+
+Entonces creemos nuestro error boundary:
+
+```jsx:ErrorBoundary.js
+class ErrorBoundary extends React.Component {
+  state = { error: null };
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Log error to an error reporting service like Sentry
+    console.log({ error, errorInfo });
+  }
+
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return <this.props.FallbackComponent error={error} />
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+También necesitamos nuestro componente fallback, vamos a crearlo:
+
+```jsx:FallbackComponent.js
+function ErrorFallback({ error }) {
+  return (
+    <div>
+      <h3>Something went wrong</h3>
+      <p>{error.message}</p>
+    </div>
+  )
+}
+```
+
+Y el último paso sería contener nuestro App dentro del error boundary:
+
+```jsx:App.js
+function App() {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Header />
+      <Movies>
+        <Movie />
+      </Movies>
+      <Footer />
+    </ErrorBoundary>
+  )
+}
+```
+
+Otra forma es implementar un paquete como [react-error-boundary](https://www.npmjs.com/package/react-error-boundary), entonces podemos remover nuestro <Highlighted text="ErrorBoudary.js" /> e instalar <Highlighted text="react-error-boundary" />
+
+Luego, podremos implementarlo de esta forma:
+
+```jsx:App.js
+import { ErrorBoundary } from 'react-error-boundary';
+
+function App() {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Header />
+      <Movies>
+        <Movie />
+      </Movies>
+      <Footer />
+    </ErrorBoundary>
+  )
+}
+```
+
+## Demo
+
+Estos dos botones están contenidos dentro del mismo error boundary. Si uno falla, ambos van a ser reemplazados por nuestro Fallback UI:
+
+<SameErrorBoundary />
+
+## Donde ubicar error boundaries
+
+Esto es algo que depende de ti. Yo pienso que no deberíamos ser muy "granulares" pero esto depende, puede ser que te alcance con un solo error boundary que contenga toda la aplicación como hicimos antes. Pero también puede ser que necesites contener una funcionalidad individual para proteger de que esta rompa el resto de la aplicación.
+
+## Comportamiento para errores no controlados
+
+Para errores que no son atrapados por ningún error boundary, todo el árbol de componentes será desmontado.
+
+Este comportamiento existe desde react 16. Fue una decisión debatida y dicen que es peor dejar una UI corrupta que removerla completamente.
+
+El equipo de react nos alienta a usar servicios para reportar errores (o construir los nuestros) así podemos detectar aquellas excepciones no controladas y arreglarlas.
+
+## Restablecer la UI
+
+Jugá con la siguiente demo:
+
+<ResetUI />
+
+¿Cómo podemos restablecer o recuperar la UI? Bueno, para esto te recomiendo usar el paquete que te mencioné antes (react-error-boundary) porque nos facilitará implementar este comportamiento. Solo necesitamos hacer lo siguiente:
+
+```jsx:FallbackComponent.js
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <div>
+      <h3>Something went wrong</h3>
+      <p>{error.message}</p>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  )
+}
+```
+
+Primero actualicemos nuestro FallbackComponent para aceptar <Highlighted text="resetErrorBoundary" /> y luego pasarle <Highlighted text="onReset" /> a ErrorBoundary:
+
+```jsx:App.js
+import { ErrorBoundary } from 'react-error-boundary';
+
+function App() {
+  return (
+    <ErrorBoundary 
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // resetea el estado de tu app así el error no vuelve a ocurrir
+      }}
+    >
+      <Header />
+      <Movies>
+        <Movie />
+      </Movies>
+      <Footer />
+    </ErrorBoundary>
+  )
+}
+```
+
+Y eso sería todo. Acá esta el [codesandbox](https://codesandbox.io/s/react-error-boundary-ymwiz) con la demo que hicimos anteriormente.
+
+## Manejar errores asíncronos
+
+Los error boundaries no atrapan errores para código asíncrono, la forma que tenemos de manejar estos errores podría ser manejar un estado de error y cuando el <Highlighted text="error" /> existe retornamos un fallback UI:
+
+```jsx
+function Movies() {
+  // .......
+
+  const [error, setError] = useState();
+
+  const getMovies = () => {
+    try {
+      const response = await fetch('http://example.com/movies.json');
+      handleResponse(response);
+    } catch(error) {
+      setError(error);
+    }
+  }
+
+  if (error) {
+    return <ErrorFallback error={error} />;
+  }
+
+  // .......
+}
+```
+
+Esto no está tan mal diría Guido Kaczka, pero podemos hacerlo de una mejor forma usando un hook que nos provee react-error-boundary llamado <Highlighted text="useErrorHandler" />
+
+```jsx
+function Movies() {
+  // .......
+  
+  const handleError = useErrorHandler()
+
+  const getMovies = () => {
+    try {
+      const response = await fetch('http://example.com/movies.json');
+      handleResponse(response);
+    } catch(error) {
+      handleError(error);
+    }
+  }
+
+  // .......
+}
+```
+
+Entonces cuando nuestro getMovies falla, la función handleError es llamada con el error y <Highlighted text="react-error-boundary" /> hará la propagación al error boundary más cercano.
+
+## Conclusión
+
+Los errores suceden todo el tiempo, entonces deberíamos usar un error boundary para manejar estos errores y no romper nuestra aplicación. Puedes crear tu propio error boundary o usar un paquete, react-error-boundary es una buena opción y en este post expliqué algunas funcionalidades interesantes que puedes usar.

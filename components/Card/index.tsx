@@ -31,7 +31,7 @@ export default function Card({ post, variant }: Props) {
           </Box>
           <Box __css={styles.infoWrapper}>
             {/* TODO: add locale for date and create a Date component */}
-            <chakra.small fontSize="sm">{format(new Date(post.date), "MMMM d, y")}</chakra.small>
+            <chakra.small fontSize="sm">{format(new Date(post.date.replace("-", "/")), "MMMM d, y")}</chakra.small>
             <Heading fontSize="3xl" marginBottom="3">{post.title}</Heading>
             <Text>{post.summary}</Text>
           </Box>
