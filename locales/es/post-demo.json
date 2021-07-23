@@ -1,5 +1,12 @@
 {
   "toEndBtn": "Agregar al final",
   "toStartBtn": "Agregar al inicio",
-  "removeAll": "Eliminar todo"
+  "removeAll": "Eliminar todo",
+  "somethingWrong": "Algo ha salido mal",
+  "fallbackUIMessage": "(Esto es una fallback UI 😅)",
+  "tryAgain": "Intentá de nuevo",
+  "letsPlay": "Juguemos",
+  "breakBtn": "Romper app",
+  "breakDescription": "Presioná el botón para romper toda la app",
+  "breakErrorMessge": "Uyy rompimos la app 🤦‍♂️"
 }

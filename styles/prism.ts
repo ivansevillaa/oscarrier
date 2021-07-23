@@ -50,14 +50,13 @@ export default css`
   /* Code blocks */
   pre[class*="language-"] {
     padding: 1em;
-    margin: 0.5em 0;
     overflow: auto;
   }
 
   :not(pre) > code[class*="language-"],
   pre[class*="language-"] {
     color: white;
-    background: #011627;
+    background: #011f38;
   }
 
   :not(pre) > code[class*="language-"] {
@@ -151,5 +150,13 @@ export default css`
 
   .token.italic {
     font-style: italic;
+  }
+
+  .remark-code-title {
+    background: #011627;
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 20px
   }
 `;

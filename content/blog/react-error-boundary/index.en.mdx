@@ -1,0 +1,246 @@
+---
+title: "Avoid Crash your React App with Error Boundaries"
+date: "2021-07-23"
+summary: "Avoid errors is so difficult, errors are there all the time. But using Errors Boundaries we can handle these errors to give a better user experience when something is wrong."
+cover: "/images/react-error-boundary.jpg"
+slug: "react-error-boudary"
+---
+
+When we create applications we do our best to avoid making mistakes so we don't crash the whole app. But this is so difficult, to not say impossible, errors will be there and will crash you. Therefore we should catch these possibles errors and trigger a fallback to protect ourselves.
+
+## Try/catch
+
+If you are working with javascript code and you have to handle an error, maybe the first thing that brings to your head would be to use a try/catch block and that is great **but only works for imperative code:**
+
+```jsx
+const getMovies = () => {
+  try {
+    const response = await fetch('http://example.com/movies.json');
+    handleResponse(response);
+  } catch(error) {
+    handleError(error);
+  }
+}
+```
+
+And, how you probably know, React components are **declarative code:**
+
+```jsx
+function App() {
+  try {
+    return (
+      <>
+        <Header />
+        <Movies>
+          <Movie />
+        </Movies>
+        <Footer />
+      </>
+    )
+  } catch(error) {
+    <ErrorFallback error={error} />
+  }
+}
+```
+
+So if you use a try/catch block wrapping your App content, you will show your Fallback UI if the App has an error, but if a component inside App has an error, you will show a blank screen. Because we are not calling Header, Movies or Footer. We just are creating react elements.
+
+So.... how we can show a Fallback UI when an error appears? Well, the answer is **error boundaries.**
+
+## Error boundary
+
+Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of a blank screen. Error boundaries catch errors during rendering, lifecycle methods, and constructors of the whole tree below them.
+
+We need a class component to create an error boundary component and define either <Highlighted text="getDerivedStateFromError" /> or <Highlighted text="componentDidCatch" /> (or both). The rule is that getDerivedStateFromError should be used to render the fallback UI and componentDidCatch to log the error.
+
+So let's create our error boundary:
+
+```jsx:ErrorBoundary.js
+class ErrorBoundary extends React.Component {
+  state = { error: null };
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Log error to an error reporting service like Sentry
+    console.log({ error, errorInfo });
+  }
+
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return <this.props.FallbackComponent error={error} />
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+Also, we need our fallback component, so let's create this:
+
+```jsx:FallbackComponent.js
+function ErrorFallback({ error }) {
+  return (
+    <div>
+      <h3>Something went wrong</h3>
+      <p>{error.message}</p>
+    </div>
+  )
+}
+```
+
+And the last step is to wrap our App with the error boundary:
+
+```jsx:App.js
+function App() {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Header />
+      <Movies>
+        <Movie />
+      </Movies>
+      <Footer />
+    </ErrorBoundary>
+  )
+}
+```
+
+Another way is to implement a package such as [react-error-boundary](https://www.npmjs.com/package/react-error-boundary), so we can remove our <Highlighted text="ErrorBoudary.js" /> and install <Highlighted text="react-error-boundary" />
+
+Then, we are be able to implement this:
+
+```jsx:App.js
+import { ErrorBoundary } from 'react-error-boundary';
+
+function App() {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Header />
+      <Movies>
+        <Movie />
+      </Movies>
+      <Footer />
+    </ErrorBoundary>
+  )
+}
+```
+
+## Live demo
+
+These two buttons are wrapped for the same error boundary. If one crash, both will be replaced for the Fallback UI:
+
+<SameErrorBoundary />
+
+## Where to place error boundaries
+
+This is something that is up to you. I think that shouldn't be too granular but it depends, maybe you can wrap a top-level error boundary as we did before and that is. But maybe you also need to wrap an individual functionality to protect that from the crash of the rest of the application.
+
+## Behavior for uncaught errors
+
+For errors that were not caught by any error boundary, the whole react component tree will be unmounted.
+
+This behavior exists since react 16. Was a decision debated and says that is worse to leave a corrupted UI in place than to completely remove it.
+
+React team also encourages you to use JS error reporting services (or build your own) so that you can learn about unhandled exceptions as they happen in production, and fix them.
+
+## Reset the UI
+
+Play around with the next demo:
+
+<ResetUI />
+
+How we can reset or recover the UI? Well for that I recommend you use the package I mention before (react-error-boundary) because will be easier to implement this behavior, you just have to do the next:
+
+```jsx:FallbackComponent.js
+function ErrorFallback({ error, resetErrorBoundary }) {
+  return (
+    <div>
+      <h3>Something went wrong</h3>
+      <p>{error.message}</p>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  )
+}
+```
+
+First updated our FallbackComponent to accept <Highlighted text="resetErrorBoundary" /> and then pass the <Highlighted text="onReset" /> to the ErrorBoundary:
+
+```jsx:App.js
+import { ErrorBoundary } from 'react-error-boundary';
+
+function App() {
+  return (
+    <ErrorBoundary 
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // reset the state of your app so the error doesn't happen again
+      }}
+    >
+      <Header />
+      <Movies>
+        <Movie />
+      </Movies>
+      <Footer />
+    </ErrorBoundary>
+  )
+}
+```
+
+And that is. Here is the [codesandbox](https://codesandbox.io/s/react-error-boundary-ymwiz) with the demo that we do before.
+
+## Handle asynchronous errors
+
+React error boundaries don't catch errors for asynchronous code, the way that we handle these errors could be managing some error state and when the <Highlighted text="error" /> exists we return a fallback UI:
+
+```jsx
+function Movies() {
+  // .......
+
+  const [error, setError] = useState();
+
+  const getMovies = () => {
+    try {
+      const response = await fetch('http://example.com/movies.json');
+      handleResponse(response);
+    } catch(error) {
+      setError(error);
+    }
+  }
+
+  if (error) {
+    return <ErrorFallback error={error} />;
+  }
+
+  // .......
+}
+```
+
+This is not too bad, but we can do it in a better way using react-error-boundary's hook  called <Highlighted text="useErrorHandler" />
+
+```jsx
+function Movies() {
+  // .......
+  
+  const handleError = useErrorHandler()
+
+  const getMovies = () => {
+    try {
+      const response = await fetch('http://example.com/movies.json');
+      handleResponse(response);
+    } catch(error) {
+      handleError(error);
+    }
+  }
+
+  // .......
+}
+```
+
+So when our getMovies failed, the handleError function is called with the error and <Highlighted text="react-error-boundary" /> will make that propagate to the nearest error boundary.
+
+## Conclusion
+
+Errors happen all the time, so you should use an error boundary to handle these errors and don't break the whole app. You can create your own error boundary or use a package, the react-error-boundary is a good one and I explained, in this post, some functionalities that you can use.
