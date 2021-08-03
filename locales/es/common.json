@@ -5,5 +5,12 @@
   "github": "GitHub",
   "en": "English",
   "es": "Español",
-  "coffee": "Buy me a coffee"
+  "coffee": "Buy me a coffee",
+  "newsletterTitle": "Subscríbete al newsletter",
+  "newsletterDescription": "Subscríbete para recibir mis árticulos por email.",
+  "newsletterEmail": "delfi@algo.com",
+  "newsletterButton": "Subscribirse",
+  "newsletterNewSubscription": "Gracias por subscribirte. Ahora eres parte del newsletter 🎉",
+  "newsletterClientErr": "🤔 Hmmm... Me parece que ese email no es válido",
+  "newsletterServerErr": "🤦‍♂️ Uyy hay un problema, pero no es tu culpa. Intentalo nuevamente más tarde 😅"
 }
