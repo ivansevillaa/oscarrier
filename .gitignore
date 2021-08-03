@@ -37,3 +37,6 @@ test-timings.json
 # Vercel
 .vercel
 .now
+
+# env files
+.env.*

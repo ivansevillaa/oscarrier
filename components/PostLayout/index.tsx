@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Box, chakra } from "@chakra-ui/react";
 import PostFooter from "@components/PostFooter";
 import PostHeader from "@components/PostHeader";
+import Subscribe from "@components/Subscribe";
 import { PostMetadata } from "@ts/post";
 
 interface Props {
@@ -21,6 +22,7 @@ export default function PostLayout({ children, frontMatter }: Props) {
         {children}
       </Box>
       <PostFooter slug={frontMatter.slug} title={frontMatter.title} />
+      <Subscribe />
     </chakra.section>
   );
 }
