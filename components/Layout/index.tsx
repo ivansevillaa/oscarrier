@@ -39,8 +39,8 @@ export default function Layout({ children, customMeta }: Props) {
         <title>{meta.title}</title>
         <meta name="description" content={meta.description} />
 
-        <meta property="og:url" content={`https://oscarrier.me/${asPath}`} />
-        <link rel="canonical" href={`https://oscarrier.me/${asPath}`} />
+        <meta property="og:url" content={`https://oscarrier.me${asPath}`} />
+        <link rel="canonical" href={`https://oscarrier.me${asPath}`} />
         <meta property="og:type" content={meta.type} />
         <meta property="og:site_name" content="Ivan Sevilla" />
         <meta property="og:description" content={meta.description} />
