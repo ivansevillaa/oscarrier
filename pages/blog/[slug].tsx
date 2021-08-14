@@ -19,7 +19,7 @@ export default function Blog({ source, frontMatter }: Props) {
       customMeta={{
         title: `${frontMatter.title} - Ivan Sevilla`,
         description: frontMatter.summary,
-        image: frontMatter.cover,
+        image: `https://www.oscarrier.me${frontMatter.cover}`,
         date: frontMatter.date,
         type: "article"
       }}
