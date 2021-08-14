@@ -15,7 +15,15 @@ export default function Blog({ source, frontMatter }: Props) {
   const content = hydrate(source, { components: MDXComponents });
 
   return (
-    <Layout>
+    <Layout
+      customMeta={{
+        title: `${frontMatter.title} - Ivan Sevilla`,
+        description: frontMatter.summary,
+        image: frontMatter.cover,
+        date: frontMatter.date,
+        type: "article"
+      }}
+    >
       <PostLayout frontMatter={frontMatter}>
         {content}
       </PostLayout>
