@@ -1,5 +1,6 @@
 import { GetStaticPathsContext, GetStaticPropsContext } from "next";
 import hydrate from "next-mdx-remote/hydrate";
+import Layout from "@components/Layout";
 import MDXComponents from "@components/MDXComponents";
 import PostLayout from "@components/PostLayout";
 import { getFileBySlug, getFilesWithLocales } from "@utils/mdx";
@@ -14,9 +15,19 @@ export default function Blog({ source, frontMatter }: Props) {
   const content = hydrate(source, { components: MDXComponents });
 
   return (
-    <PostLayout frontMatter={frontMatter}>
-      {content}
-    </PostLayout>
+    <Layout
+      customMeta={{
+        title: `${frontMatter.title} - Ivan Sevilla`,
+        description: frontMatter.summary,
+        image: frontMatter.cover,
+        date: frontMatter.date,
+        type: "article"
+      }}
+    >
+      <PostLayout frontMatter={frontMatter}>
+        {content}
+      </PostLayout>
+    </Layout>
   );
 }
 
