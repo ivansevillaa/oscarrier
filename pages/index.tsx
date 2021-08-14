@@ -3,6 +3,7 @@ import useTranslation from "next-translate/useTranslation";
 import Card from "@components/Card";
 import Hero from "@components/Hero";
 import PostList from "@components/PostList";
+import Layout from "@components/Layout";
 import { getAllFilesFrontMatter } from "@utils/mdx";
 import { PostMetadata } from "@ts/post";
 import PROFILE_SRC from "../constants/global";
@@ -15,7 +16,7 @@ export default function Home({ posts }: Props) {
   const { t } = useTranslation("home");
 
   return (
-    <>
+    <Layout>
       <Hero
         image={PROFILE_SRC}
         alt={t("alt")}
@@ -27,7 +28,7 @@ export default function Home({ posts }: Props) {
           <Card key={post.slug} post={post} variant={index == 0 ? "wide" : "default"} />
         ))}
       </PostList>
-    </>
+    </Layout>
   );
 }
 

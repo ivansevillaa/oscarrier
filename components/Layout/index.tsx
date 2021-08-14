@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Head from "next/head";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import { chakra, Flex, Divider } from "@chakra-ui/react";
@@ -17,6 +18,9 @@ export default function Layout({ children }: Props) {
       paddingX={{ base: "4", xl: 0 }}
       marginBottom="14"
     >
+      <Head>
+        <title>Title</title>
+      </Head>
       <Header />
       <chakra.main flexGrow={1} marginBottom="32">
         {children}

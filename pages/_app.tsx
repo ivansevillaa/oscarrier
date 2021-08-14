@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Chakra from "@components/Chakra";
-import Layout from "@components/Layout";
 import { pageview } from "@utils/gtag";
 
 import type { AppProps } from "next/app";
@@ -23,9 +22,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Chakra cookies={pageProps.cookies}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Component {...pageProps} />
     </Chakra>
   );
 }
