@@ -12,11 +12,11 @@ interface Props {
 }
 
 export default function Layout({ children, customMeta }: Props) {
-  const { asPath, locale } = useRouter();
+  const { asPath } = useRouter();
 
   // TODO: move to locales files or constant file
   const meta: Meta = {
-    title: "Oscarrier",
+    title: "Ivan Sevilla",
     description: "JavaScript developer. I like to create web products and write things that I think are interesting.",
     image: "https://www.oscarrier.me/images/profile.jpg",
     type: "website",
@@ -39,9 +39,10 @@ export default function Layout({ children, customMeta }: Props) {
         <title>{meta.title}</title>
         <meta name="description" content={meta.description} />
 
-        <meta property="og:url" content={`https://oscarrier.me/${locale}${asPath}`} />
+        <meta property="og:url" content={`https://oscarrier.me/${asPath}`} />
+        <link rel="canonical" href={`https://oscarrier.me/${asPath}`} />
         <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="Oscarrier" />
+        <meta property="og:site_name" content="Ivan Sevilla" />
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
