@@ -62,7 +62,7 @@ To create web components we need to use the lifecycle methods that we explained 
 We'll create an <Highlighted text="amazing-card" />, but before to start I want to show what folder structure I'll follow:
  
 <Image src="/images/web-components-introduction/folder-structure.png" alt="folder structure" width={480} height={300} />
- 
+
 We need to import our amazing-card to index.js and then import the index.js to the HTML file. To do that, we need to use <Highlighted text="ES Modules" />.
  
 ### ES modules
@@ -77,7 +77,7 @@ Then create an index.js file and an index.html file with the following content:
 import "./components/amazing-card.js";
 ```
 
-<br />
+<br />  
 
 ```html:index.html
 <h1 class="title">Amazing cards</h1>
@@ -222,7 +222,7 @@ class AmazingCard extends HTMLElement {
 customElements.define("amazing-card", AmazingCard);
 ```
  
-<br />
+<br />  
  
 <Image src="/images/web-components-introduction/shadow-dom-2.png" alt="Shadow dom image" height={480} />
 
