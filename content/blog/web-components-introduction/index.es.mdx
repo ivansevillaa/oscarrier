@@ -62,7 +62,7 @@ Para crear tu web component necesitamos usar los métodos del ciclo de vida que 
 Vamos a crear un componente llamado <Highlighted text="amazing-card" />, pero antes de empezar quiero mostrarte la estructura de carpetas que voy a seguir:
  
 <Image src="/images/web-components-introduction/folder-structure.png" alt="folder structure" width={480} height={300} />
- 
+
 Necesitamos importar nuestra amazing-card a index.js y luego importar nuestro index.js a el archivo HTML. Para hacer esto necesitamos usar <Highlighted text="ES Modules" />.
 
 ### ES modules
@@ -76,9 +76,9 @@ Luego creá un archivo index.js y un index.html con el siguiente contenido:
 ```js:index.js
 import "./components/amazing-card.js";
 ```
- 
-<br />
- 
+
+<br />  
+
 ```html:index.html
 <h1 class="title">Amazing cards</h1>
 <script type="module" src="./index.js"></script>
@@ -133,7 +133,7 @@ Luego de esto necesitamos usar nuestro custom element en el archivo HTML:
 Entonces, el DOM se verá como esto, con nuestra amazing card y dentro el article con el h1.
  
 <Image src="/images/web-components-introduction/dom.png" alt="DOM image" height={480} />
- 
+
 Perfecto, ahora agreguemos algo de estilos porque nuestra amazing card es súper aburrida. Agreguemos un color al nombre del dueño.
 
 ```js{8}:components/amazing-card.js
@@ -221,12 +221,12 @@ class AmazingCard extends HTMLElement {
  
 customElements.define("amazing-card", AmazingCard);
 ```
-
-<br />
+ 
+<br />  
  
 <Image src="/images/web-components-introduction/shadow-dom-2.png" alt="Shadow dom image" height={480} />
- 
-Y ahí está, tremendo, diría greg! Ahora, mejoremos el rendimiento con <Highlighted text="HTML template" />.
+
+Y ahí está, tremendo! Ahora, mejoremos el rendimiento con <Highlighted text="HTML template" />.
 
 ### HTML template
  
@@ -323,7 +323,7 @@ Para probar nuestro valor por defecto podemos crear una nueva instancia de nuest
  <span slot="owner">Ivan Sevilla</span>
 </amazing-card>
  
-<amazing-card></amazing-card>
+ <amazing-card></amazing-card>
  
 <script type="module" src="./index.js"></script>
 ```
