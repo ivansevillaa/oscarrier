@@ -1,2 +1,1 @@
-// eslint-disable-next-line import/prefer-default-export
-export { Highlighted } from "./Highlighted";
+export { default as Highlighted } from "./Highlighted";

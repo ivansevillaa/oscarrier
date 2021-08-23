@@ -14,5 +14,4 @@ function Highlighted({ text }: Props) {
   );
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export { Highlighted };
+export default Highlighted;
