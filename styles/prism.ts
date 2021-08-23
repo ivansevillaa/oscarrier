@@ -159,4 +159,10 @@ export default css`
     font-weight: bold;
     padding: 12px 20px
   }
+
+  .mdx-marker {
+    background-color: rgb(2, 55, 81);
+    border-left: 5px solid rgb(2, 155, 206);
+    margin: 0px -1em;
+  }
 `;

@@ -13,6 +13,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <link rel="shortcut icon" href="/images/icon.png" />
           {/* Global Site Tag (gtag.js) - Google Analytics */}
           <script
             async

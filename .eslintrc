@@ -26,6 +26,7 @@
       "ts": "always"
     }],
     "import/no-unresolved": 0,
+    "import/prefer-default-export": 0,
     "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
     "react/jsx-props-no-spreading": [2, { "exceptions": ["Component"] }],
     "react/no-danger": 0,
