@@ -1,0 +1,520 @@
+---
+title: "¿Cómo Crear un Web Component?"
+date: "2021-08-23"
+summary: "Introducción a los fundamentos de web components, la forma de crear nuevos tags de HTML encapsulados, personalizados y reutilizables para utilizar en web apps que funcionaran en cualquier navegador moderno. Además puede ser utilizado con cualquier librería o framework de JavaScript."
+cover: "/images/web-components-introduction.jpg"
+slug: "web-components-introduction"
+---
+ 
+Los componentes web son una serie de diferentes tecnologías que nos permiten crear <Highlighted text="custom elements" /> que pueden ser reutilizados en cualquiera de tus aplicaciones.
+ 
+Capaz que leyendo esto te pones a pensar que es un framework o librería nueva de javascript como React, Svelte o Vue. Pero, realmente los **web components** resuelven un problema que estos frameworks tienen. El problema es que si creamos un componente en React este no puede coexistir en otro proyecto usando Vue por ejemplo. Entonces lo copado de los **web components**, entre otras cosas, es que resuelven esto.
+ 
+Con web components, podemos crear una arquitectura agnóstica escalable y luego usar frameworks o librerías para tomar ventajas de las cosas que estas mismas nos dan.
+ 
+Cuando digo que los web components están construidos con estándares web me refiero a que los construimos con **web APIs** que ya existen en el navegador.
+ 
+Entonces, podemos decir que los web components son una serie de APIs del navegador que nos permiten crear nuevos tags de HTML encapsulados, personalizados y reutilizables para utilizar en web apps. Los web components se construyen sobre estándares webs, por lo que, funcionaran en cualquier navegador moderno, y se pueden implementar con cualquier framework o librería de JavaScript.
+ 
+Las APIs son:
+ 
+- Custom elements
+- Shadow DOM
+- HTML template
+- ES modules
+ 
+## Ciclo de vida
+ 
+Antes de comenzar a crear nuestros componentes necesitamos entender el ciclo de vida para correr código en un tiempo específico. Estos ciclos de vida se llaman <Highlighted text="custom element reactions" /> y son los siguientes:
+ 
+### constructor
+ 
+El <Highlighted text="constructor()" /> es llamado cuando el Web Component es creado. Muy útil para inicializar estado, eventos, o crear el shadow dom. Tené en cuenta que los eventos que vamos a setear en el constructor deben ser eventos de nuestro custom element y no necesita ser limpiado porque después lo va a limpiar el garbage collector cuando se pierda la última referencia al elemento.
+ 
+Cuando creamos el constructor, tenemos que llamar a super() para llamar a la clase de la que extiende nuestro web component (HTMLElement, la vamos a ver en un momento)
+ 
+### connectedCallback
+ 
+El método <Highlighted text="connectedCallback()" /> es llamado cuando un elemento es añadido al DOM. Útil para correr código de setup, como puede ser hacer un fetch, setear valores por default a atributos o hacer render. Acá podemos agregar eventos pero tiene que ser para eventos que no estén en el alcance de nuestro componente (por ejemplo, window) y debería ser limpiado en el disconnectedCallback.
+ 
+### disconnectedCallback
+ 
+El método <Highlighted text="disconnectedCallback()" /> es llamado cuando el elemento se remueve del DOM. Útil para correr código de limpieza, podemos remover cualquier evento o cancelar intervals.
+ 
+### attributeChangedCallback
+ 
+Por último, pero no menos importante, tenemos al método <Highlighted text="attributeChangedCallback(attr, oldVal, newVal)" /> que es llamado cada vez que uno de los atributos del custom element es agregado, cambiado o eliminado. Los atributos que van a hacer identificados por este método deben estar especificados en <Highlighted text="static get observedAttributes" />
+ 
+```js
+static get observedAttributes() {
+   return ["awesome"];
+}
+```
+ 
+En este ejemplo cuando el atributo <Highlighted text="awesome" /> es cambiado, nuestro <Highlighted text="attributeChangedCallback" /> se va a ejecutar.
+ 
+Existen otros cilos de vida que no explico acá, pero si tenés ganas de saber cúales son [este diagrama](https://andyogo.github.io/custom-element-reactions-diagram/) seguro es de tu agrado.
+
+## Creando tu primer web component
+ 
+Para crear tu web component necesitamos usar los métodos del ciclo de vida que explicamos antes y las APIs que mencionamos. Pero todavía no sabemos qué hacen estas APIs y cómo pueden ser utilizadas. Entonces, expliquemos que hace cada API y cómo usarlas mientras creamos nuestro primer web component.
+ 
+Vamos a crear un componente llamado <Highlighted text="amazing-card" />, pero antes de empezar quiero mostrarte la estructura de carpetas que voy a seguir:
+ 
+<Image src="/images/web-components-introduction/folder-structure.png" alt="folder structure" width={480} height={300} />
+ 
+Necesitamos importar nuestra amazing-card a index.js y luego importar nuestro index.js a el archivo HTML. Para hacer esto necesitamos usar <Highlighted text="ES Modules" />.
+
+### ES modules
+ 
+ES modules nos permite importar componentes en otros archivos de javascript o en nuestro archivo html. ES modules tienen un montón de particularidades pero con entender que es la forma en la que vamos a importar nuestros componentes es suficiente. Pero si quieres conocer más acerca de ES modules te recomiendo [este artículo](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/).
+ 
+Creá un archivo components/amazing-card.js y por ahora dejemoslo vacío.
+ 
+Luego creá un archivo index.js y un index.html con el siguiente contenido:
+ 
+```js:index.js
+import "./components/amazing-card.js";
+```
+ 
+<br />
+ 
+```html:index.html
+<h1 class="title">Amazing cards</h1>
+<script type="module" src="./index.js"></script>
+```
+ 
+Después de tener listos nuestros archivos e importados, finalmente estamos listos para empezar a crear nuestros web components. Para empezar necesitamos usar <Highlighted text="custom elements" />.
+
+### Custom elements
+ 
+Los custom elements nos permiten definir nuevas etiquetas de HTML. Esta API es lo fundamental de los web components. Nos brinda una manera de crear componentes reutilizables basándose en estándares.
+ 
+Existen dos tipos de custom elements:
+ 
+- **Autonomous custom elements**, los cuales pueden ser usados para crear elementos HTML completamente nuevos.
+- **Customized built-in element**, los cuales pueden ser usados para extender elementos HTML ya existentes u otros web components.
+ 
+En este post, cubriremos los autonomous custom elements
+ 
+Deberías crear una nueva etiqueta teniendo en cuenta que el nombre tiene que tener al menos dos palabras separadas con guiones para evitar futuros conflictos con nuevas etiquetas de html. También siempre deben ser en minúscula, y no deben contener ningún carácter en mayúscula.
+
+```js:components/amazing-card.js
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+   this.owner = "Ivan";
+ }
+ 
+ connectedCallback() {
+   this.innerHTML = `
+     <article>
+       <h1>${this.owner}</h1>
+     </article>
+   `;
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+
+Primero, creamos una clase que extiende de HTMLElement, y en el constructor, yo creo un estado con mi nombre. Luego cuando el componente agregado al DOM podemos añadir HTML a <Highlighted text="this" /> (nuestra instancia de amazing card).
+ 
+Y por último definimos nuestro custom element pasándole el nombre y el constructor.
+ 
+Luego de esto necesitamos usar nuestro custom element en el archivo HTML:
+ 
+```html:index.html
+<h1>Amazing cards</h1>
+<amazing-card></amazing-card>
+<script type="module" src="./index.js"></script>
+```
+ 
+Entonces, el DOM se verá como esto, con nuestra amazing card y dentro el article con el h1.
+ 
+<Image src="/images/web-components-introduction/dom.png" alt="DOM image" height={480} />
+ 
+Perfecto, ahora agreguemos algo de estilos porque nuestra amazing card es súper aburrida. Agreguemos un color al nombre del dueño.
+
+```js{8}:components/amazing-card.js
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+   this.owner = "Ivan";
+ }
+ 
+ connectedCallback() {
+   this.innerHTML = `
+     <style>
+       h1 {
+         color: tomato;
+       }
+     </style>
+     <article>
+       <h1>${this.owner}</h1>
+     </article>
+   `;
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+ 
+Si estás codeando paso a paso conmigo, te habrás dado cuenta que el nombre del título cambia de color. Capaz te preguntas por qué? Bueno esto pasa porque ambos son etiquetas <Highlighted text="h1" />, una posible solución podría ser agregar alguna clase pero en un proyecto grande esto nos podría traer dificultades entonces capaz necesites usar alguna metodología como BEM para nombrar tus clases. Pero, los web components solucionan esto agregando un <Highlighted text="Shadow DOM" />. 
+
+### Shadow DOM
+ 
+Con shadow DOM podemos encapsular estilos y markup en un web component. Entonces, podemos tener un elemento visible para el usuario pero apartado del resto del documento. Esto nos evita tener problemas como especificidad con CSS porque el código dentro de un componente con shadow DOM solo existe en ese componente y este no coexiste con el código fuera de él.
+
+```js{4}:components/amazing-card.js
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+   this.attachShadow({ mode: "open" });
+   this.owner = "Ivan";
+ }
+ 
+ connectedCallback() {
+   this.innerHTML = `
+     <style>
+       h1 {
+         color: tomato;
+       }
+     </style>
+     <article>
+       <h1>${this.owner}</h1>
+     </article>
+   `;
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+ 
+¡Uyyy! Ahora no vemos nuestro nombre, y el color del título sigue siendo tomato. Bueno, esto tiene sentido porque ahora necesitamos agregar el HTML a el <Highlighted text="shadow root" />.
+ 
+<Image src="/images/web-components-introduction/shadow-dom-1.png" alt="Shadow dom image" height={480} />
+
+Viste? Ahora tenemos nuestro componente, pero para poder verlo necesitamos agregar el HTML a el <Highlighted text="shadow root" />.
+ 
+```js{9}:components/amazing-card.js
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+   this.attachShadow({ mode: "open" });
+   this.owner = "Ivan";
+ }
+ 
+ connectedCallback() {
+   this.shadowRoot.innerHTML = `
+     <style>
+       h1 {
+         color: tomato;
+       }
+     </style>
+     <article>
+       <h1>${this.owner}</h1>
+     </article>
+   `;
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+
+<br />
+ 
+<Image src="/images/web-components-introduction/shadow-dom-2.png" alt="Shadow dom image" height={480} />
+ 
+Y ahí está, tremendo, diría greg! Ahora, mejoremos el rendimiento con <Highlighted text="HTML template" />.
+
+### HTML template
+ 
+HTML template es una etiqueta de HTML que nos permite escribir fragmentos de markup que no son mostrados en la página renderizada. El fragmento no será añadido hasta que lo clonemos con JavaScript. El beneficio de esto es que el navegador solo necesita parsear el HTML una sola vez y luego clonarlo cuando el fragmento es requerido sin impactar el rendimiento.
+ 
+```js{1-2,9-10,14}:components/amazing-card.js
+const template = document.createElement("template");
+template.innerHTML = `
+  <style>
+    h1 {
+      color: tomato;
+    }
+  </style>
+  <article>
+    <h1></h1>
+  </article>
+`;
+ 
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+   this.attachShadow({ mode: "open" });
+   this.owner = "Ivan"
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.shadowRoot.querySelector("h1").innerText = this.owner;
+ }
+ 
+ connectedCallback() {
+   // removemos el código porque ahora acá no necesitamos hacer nada
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+ 
+Primero, creamos una etiqueta template y luego agregamos el HTML a el template. Presta atención que la etiqueta <Highlighted text="h1" /> está vacía.
+ 
+Luego tenemos que hacer un append del contenido del clon del template a el shadow dom y obtener nuestra etiqueta <Highlighted text="h1" /> para insertar algún texto. Estas acciones las hacemos en el constructor entonces, por ahora, podemos remover nuestro conectedCallback.
+ 
+La clave acá es notar que hacemos un append de un clon del contenido del template al shadow root, creado usando el método [cloneNode](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode).
+ 
+Felicitaciones, acabas de usar las cuatro APIs para crear tu primer web component. Ahora entendés que hace y para qué sirve cada API. Pero nuestra <Highlighted text="amazing-card" /> no es muy "amazing" que digamos. Agreguemos cositas a nuestro componente. Por ejemplo, que el nombre del dueño dependa de cada carta y necesitamos pasarle este cuando instanciamos nuestro componente. Para esto podemos usar <Highlighted text="attributes" /> o <Highlighted text="slots" />. Me gustaría explicarte ambas cosas, pero primero empecemos con los slots.
+
+## Slots
+ 
+Los slots son como placeholders, podemos pasarle un valor añadiendolo a un span con el atributo slot.
+ 
+```html{3}:index.html
+<h1>Amazing cards</h1>
+<amazing-card>
+ <span slot="owner">Ivan Sevilla</span>
+</amazing-card>
+<script type="module" src="./index.js"></script>
+```
+ 
+Y en nuestro archivo amazing-card necesitamos agregar el elemento <Highlighted text="slot" /> y el atributo name tiene que ser el mismo que usamos antes en el span, el contenido dentro de nuestro slot será el valor por defecto. Y por supuesto que tenemos que remover nuestra propiedad <Highlighted text="this.owner" /> al igual que el innerText que estamos usando para agregar el contenido.
+ 
+```js{}:components/amazing-card.js
+const template = document.createElement("template");
+template.innerHTML = `
+ <style>
+   h1 {
+     color: tomato;
+   }
+ </style>
+ <article>
+   <h1>
+     <slot name="owner">Hello! I'm just a default value</slot>
+   </h1>
+ </article>
+`;
+ 
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+   this.attachShadow({ mode: "open" });
+   this.shadowRoot.appendChild(template.content.cloneNode(true));
+ }
+ 
+ connectedCallback() {
+   // removemos el código porque ahora acá no necesitamos hacer nada
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+ 
+Para probar nuestro valor por defecto podemos crear una nueva instancia de nuestro amazing card pero sin usar slots.
+ 
+```html{7}:index.html
+<h1>Amazing cards</h1>
+ 
+<amazing-card>
+ <span slot="owner">Ivan Sevilla</span>
+</amazing-card>
+ 
+<amazing-card></amazing-card>
+ 
+<script type="module" src="./index.js"></script>
+```
+ 
+Y ahora podés ver como nuestra amazing card es un poco más dinámica. Buen trabajo, hicimos un montón, pero ¿qué onda los atributos que mencioné antes? Entremos un poco en ese tema.
+ 
+## Attributes
+ 
+Antes de añadir un attribute, vamos a agregar una imagen "hardcodeada", para esto necesitamos agregar un elemento <Highlighted text="img element" /> en nuestro template y luego añadir una propiedad <Highlighted text="this.src" /> en el constructor. Luego de esto solo tenemos que cambiar el valor del src de nuestro elemento img.
+ 
+```js{8,12}:components/amazing-card.js
+const template = document.createElement("template");
+template.innerHTML = `
+ <style>
+   h1 {
+     color: tomato;
+   }
+ </style>
+ <article>
+   <h1>
+     <slot name="owner">Hello! I'm just a default value</slot>
+   </h1>
+   <img />
+ </article>
+`;
+ 
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+ 
+    this.src = "https://rickandmortyapi.com/api/character/avatar/10.jpeg";
+ 
+   this.attachShadow({ mode: "open" });
+   this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.shadowRoot.querySelector("img").src = this.src;
+ }
+}
+ 
+customElements.define("amazing-card", AmazingCard);
+```
+ 
+Fantástico, pero ahora hagámoslo más dinámico haciendo que la imagen cambia dependiendo de qué atributo le pase al componente.
+ 
+Entonces, vayamos al archivo HTML y a nuestra amazing card pasemosle un atributo <Highlighted text="count" />.
+ 
+```html{3}:index.html
+<h1>Amazing cards</h1>
+ 
+<amazing-card count="10">
+ <span slot="owner">Ivan Sevilla</span>
+</amazing-card>
+ 
+<amazing-card></amazing-card>
+ 
+<script type="module" src="./index.js"></script>
+```
+ 
+Luego en nuestro archivo js, removamos la propiedad src y agreguemos una propiedad <Highlighted text="count" /> que será el atributo que pasamos desde el html o si el atributo no existe asignaremos un <Highlighted text="1 por defecto" /> y después, cuando el DOM este listo, llamaremos a la función <Highlighted text="updateSrc" /> con este valor.
+ 
+Necesitamos crear la función <Highlighted text="updateSrc" />, esta función recibe un número y actualiza el src de la imagen con el número que le pasemos.
+ 
+```js{7,13-15,17-21}:components/amazing-card.js
+...
+ 
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+ 
+    this.count = this.getAttribute("count") || 1;
+ 
+   this.attachShadow({ mode: "open" });
+   this.shadowRoot.appendChild(template.content.cloneNode(true));
+ }
+ 
+   connectedCallback() {
+     this.updateSrc(this.count);
+   }
+ 
+   updateSrc(count) {
+     this.shadowRoot.querySelector(
+       "img"
+     ).src = `https://rickandmortyapi.com/api/character/avatar/${count}.jpeg`;
+   }
+}
+ 
+...
+```
+ 
+¡Perfecto! Tenemos un componente súper dinámico que acepta valores desde slots y atributos, además tenemos valores por defecto para ellos. Ahora vayamos un poco más profundo y veamos cómo podemos cambiar la imagen cuando clickeamos un botón. 
+ 
+## Eventos
+ 
+Aprendamos cómo usar eventos en nuestros componentes. Primero, necesitamos crear un elemento button en nuestro template. También necesitamos un método <Highlighted text="changeImage" /> que actualice el count y luego llame al método <Highlighted text="updateSrc" />. Y capaz que te preguntes, cuándo vamos a llamar a <Highlighted text="changeImage" />?
+ 
+Bueno, para esto necesitamos agregar un event listener al botón que agregamos en nuestro template, y este será un evento de click que cuando ocurra el método <Highlighted text="changeImage" /> será llamado.
+ 
+Y acordate que tipos de eventos tenemos que agregar en el constructor y cuáles en el connectedCallback, lee de nuevo la sección de ciclo de vida si no te acordás bien. Pero en este caso, tenemos que agregar en el constructor.
+ 
+```js{12-14,17-20}:components/amazing-card.js
+...
+template.innerHTML = `
+ <style>
+   h1 {
+     color: tomato;
+     margin: 0;
+   }
+ </style>
+ <article>
+   <h1>
+     <slot name="owner">Hello! I'm just a default value</slot>
+   </h1>
+   <img />
+   <button>Change image</button>
+ </article>
+`;
+ 
+class AmazingCard extends HTMLElement {
+ constructor() {
+   super();
+ 
+   this.count = this.getAttribute("count") || 1;
+ 
+   this.attachShadow({ mode: "open" });
+   this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.shadowRoot
+      .querySelector("button")
+      .addEventListener("click", () => this.changeImage());
+ }
+ 
+  changeImage() {
+    this.count = Number(this.count) + 1;
+    this.updateSrc(this.count);
+  }
+ 
+ ...
+}
+...
+```
+ 
+Tremendo, nuestra card ya tiene eventos. Pero... que onda si necesitamos pasar el count de una forma más dinámica, por ejemplo, imagináte que el count deba ser actualizado por fuera del componente. Añadamos este comportamiento al HTML, vamos a agregar un nuevo script que actualiza el atributo count del primer amazing card cuando un botón en el HTML sea clickeado.
+ 
+```html{3}:index.html
+<h1>Amazing cards</h1>
+ 
+<amazing-card id="amz-card" count="10">
+ <span slot="owner">Ivan Sevilla</span>
+</amazing-card>
+ 
+<amazing-card></amazing-card>
+ 
+<button id="button">change image from html</button>
+ 
+<script type="module" src="./index.js"></script>
+<script>
+ const btn = document.getElementById("button");
+ const card = document.getElementById("amz-card");
+ btn.addEventListener("click", () => {
+   card.setAttribute("count", Number(card.getAttribute("count")) + 5);
+ });
+</script>
+```
+ 
+Ahora, tenemos el botón y el comportamiento funcionando perfectamente. Pero nuestra imagen no está cambiando, por qué? Porque desde el componente no estamos manejando nuestros atributos para estos cambios, entonces necesitamos usar método <Highlighted text="attributeChangedCallback" />.
+ 
+```js{6-8,10-18}:components/amazing-card.js
+...
+ 
+class AmazingCard extends HTMLElement {
+ ...
+ 
+  static get observedAttributes() {
+    return ["count"];
+  }
+ 
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    if (attrName === "count") {
+      this.count = Number(newVal);
+    }
+ 
+     this.updateSrc(this.count);
+  }
+ 
+ ...
+}
+...
+```
+ 
+Tenemos el observer entonces cuando el count sea añadido, cambiado o eliminado el attributeChangedCallback será llamado y si el attrName es "count", actualizamos nuestra propiedad <Highlighted text="this.count" /> con el valor que estamos pasando por fuera de nuestro componente. Después de esto es importante llamar a nuestro método updateSrc.
+ 
+## Conclusion
+ 
+Felicitaciones, tenés un web component y aprendiste los fundamentos de cómo construirlos, acá usamos las cuatro APIs para hacerlo, también utilizamos eventos, slots, atributos, cambios desde fuera y desde dentro. Sin embargo me gustaría agregar algo de estilos y enseñarte la forma de cómo se manejan los mismos, pero esto será en otro post, nos vemos pronto.
+ 
+[Acá](https://codesandbox.io/s/web-components-introduction-9gsf3?file=/components/amazing-card.js) está el código si te gustaría jugar un poco con él.
