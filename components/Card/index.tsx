@@ -15,7 +15,7 @@ interface Props {
 export default function Card({ post, variant }: Props) {
   const styles = useMultiStyleConfig("Card", { variant });
   const NextImage = chakra(Image);
-  console.log(post.date);
+
   return (
     <chakra.article __css={styles.article}>
       <Link href={`/blog/${post.slug}`} passHref>
