@@ -44,7 +44,7 @@ function PostHeader({ title, date, cover }: Props) {
         </Box>
         {/* TODO: use locales, and create a Date component */}
         <Text fontSize="sm">
-          {t("author", { date: format(new Date(date.replace("-", "/")), "MMMM d y") })}
+          {t("author", { date: format(new Date(date.replace(/-/g, "/")), "MMMM d y") })}
         </Text>
       </Flex>
       <Image

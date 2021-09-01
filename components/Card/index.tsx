@@ -15,7 +15,7 @@ interface Props {
 export default function Card({ post, variant }: Props) {
   const styles = useMultiStyleConfig("Card", { variant });
   const NextImage = chakra(Image);
-
+  console.log(post.date);
   return (
     <chakra.article __css={styles.article}>
       <Link href={`/blog/${post.slug}`} passHref>
@@ -31,7 +31,7 @@ export default function Card({ post, variant }: Props) {
           </Box>
           <Box __css={styles.infoWrapper}>
             {/* TODO: add locale for date and create a Date component */}
-            <chakra.small fontSize="sm">{format(new Date(post.date.replace("-", "/")), "MMMM d, y")}</chakra.small>
+            <chakra.small fontSize="sm">{format(new Date(post.date.replace(/-/g, "/")), "MMMM d, y")}</chakra.small>
             <Heading fontSize="3xl" marginBottom="3">{post.title}</Heading>
             <Text>{post.summary}</Text>
           </Box>
