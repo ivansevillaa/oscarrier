@@ -24,6 +24,7 @@ export default function Card({ post, variant }: Props) {
             <NextImage
               src={post.cover}
               alt="post picture"
+              placeholder="blur"
               layout="fill"
               objectFit="cover"
               __css={styles.image}

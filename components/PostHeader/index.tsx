@@ -37,6 +37,7 @@ function PostHeader({ title, date, cover }: Props) {
           <NextImage
             src={PROFILE_SRC}
             // alt={t("alt")} TODO: add alt
+            placeholder="blur"
             layout="fill"
             objectFit="cover"
             borderRadius="100%"
