@@ -26,6 +26,7 @@ test/**/next-env.d.ts
 # Editors
 **/.idea
 **/.#*
+.vscode
 
 # examples
 examples/**/out
