@@ -3,6 +3,7 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import useTranslation from "next-translate/useTranslation";
+import useNextBlurHash from "use-next-blurhash";
 import PROFILE_SRC from "constants/global";
 import { format } from "date-fns";
 
@@ -10,9 +11,13 @@ interface Props {
   title: string;
   date: string;
   cover: string;
+  blurHash: string;
 }
 
-function PostHeader({ title, date, cover }: Props) {
+function PostHeader({
+  title, date, cover, blurHash
+}: Props) {
+  const [blurDataUrl] = useNextBlurHash(blurHash);
   const { t } = useTranslation("post");
   const NextImage = chakra(Image);
 
@@ -37,7 +42,6 @@ function PostHeader({ title, date, cover }: Props) {
           <NextImage
             src={PROFILE_SRC}
             // alt={t("alt")} TODO: add alt
-            placeholder="blur"
             layout="fill"
             objectFit="cover"
             borderRadius="100%"
@@ -51,6 +55,8 @@ function PostHeader({ title, date, cover }: Props) {
       <Image
         src={cover}
         alt="post picture"
+        placeholder="blur"
+        blurDataURL={blurDataUrl}
         height={480}
         width={840}
       />

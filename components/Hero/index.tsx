@@ -31,7 +31,6 @@ export default function Hero({
         <NextImage
           src={image}
           alt={alt}
-          placeholder="blur"
           layout="fill"
           objectFit="cover"
           borderRadius="100%"

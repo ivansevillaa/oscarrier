@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import useNextBlurhash from "use-next-blurhash";
 import {
   chakra, Box, Heading, Text, useMultiStyleConfig
 } from "@chakra-ui/react";
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function Card({ post, variant }: Props) {
+  const [blurDataUrl] = useNextBlurhash(post.blurHash);
   const styles = useMultiStyleConfig("Card", { variant });
   const NextImage = chakra(Image);
 
@@ -25,6 +27,7 @@ export default function Card({ post, variant }: Props) {
               src={post.cover}
               alt="post picture"
               placeholder="blur"
+              blurDataURL={blurDataUrl}
               layout="fill"
               objectFit="cover"
               __css={styles.image}
