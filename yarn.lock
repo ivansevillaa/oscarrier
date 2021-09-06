@@ -4620,10 +4620,15 @@ next@^11.1.2:
     "@next/swc-linux-x64-gnu" "11.1.2"
     "@next/swc-win32-x64-msvc" "11.1.2"
 
-node-fetch@2.6.1, node-fetch@^2.6.1:
+node-fetch@2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
+
+node-fetch@^2.6.1:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.2.tgz#986996818b73785e47b1965cc34eb093a1d464d0"
+  integrity sha512-aLoxToI6RfZ+0NOjmWAgn9+LEd30YCkJKFSyWacNZdEKTit/ZMcKjGkTRo8uWEsnIb/hfKecNPEbln02PdWbcA==
 
 node-html-parser@1.4.9:
   version "1.4.9"
@@ -6288,10 +6293,10 @@ use-callback-ref@^1.2.1, use-callback-ref@^1.2.3:
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
   integrity sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==
 
-use-next-blurhash@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/use-next-blurhash/-/use-next-blurhash-1.0.1.tgz#ccfc50a0cef85d313c1f8f0a24b7068b1634a3e5"
-  integrity sha512-YeN6DFT1TnEpjsbhZMjDg5Zyig449mVnXJks2M9eikXgdgP5gYATmCO9gtTB46MlV+o7LO84RThy+6GD/eNF1w==
+use-next-blurhash@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/use-next-blurhash/-/use-next-blurhash-1.0.2.tgz#1beaf4b49b58eecbd086ab1307e5f43a7dcc3527"
+  integrity sha512-VpJjuAUOM+Xp8inR/S7iEvWNX98+KutgZ6EPuzNR594F59Kya+fdLrihdkdwz5pRV8x4xHbu9tZtGQSQZ3T/PA==
   dependencies:
     blurhash "^1.1.4"
     canvas "^2.8.0"
