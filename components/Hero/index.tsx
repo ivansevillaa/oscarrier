@@ -32,6 +32,7 @@ export default function Hero({
           src={image}
           alt={alt}
           layout="fill"
+          priority
           objectFit="cover"
           borderRadius="100%"
         />
