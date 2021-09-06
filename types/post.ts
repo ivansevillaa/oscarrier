@@ -6,6 +6,7 @@ export interface PostMetadata {
   slug: string;
   summary: string;
   title: string;
+  blurHash: string;
 }
 
 export interface MDXSource {

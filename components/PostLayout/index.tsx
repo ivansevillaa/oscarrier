@@ -17,6 +17,7 @@ export default function PostLayout({ children, frontMatter }: Props) {
         title={frontMatter.title}
         date={frontMatter.date}
         cover={frontMatter.cover}
+        blurHash={frontMatter.blurHash}
       />
       <Box>
         {children}

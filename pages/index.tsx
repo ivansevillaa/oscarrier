@@ -6,7 +6,7 @@ import PostList from "@components/PostList";
 import Layout from "@components/Layout";
 import { getAllFilesFrontMatter } from "@utils/mdx";
 import { PostMetadata } from "@ts/post";
-import PROFILE_SRC from "../constants/global";
+import { PROFILE_SRC } from "@constants/global";
 
 interface Props {
   posts: Array<PostMetadata>
