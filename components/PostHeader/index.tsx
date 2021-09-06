@@ -4,7 +4,7 @@ import {
 import Image from "next/image";
 import useTranslation from "next-translate/useTranslation";
 import useNextBlurHash from "use-next-blurhash";
-import PROFILE_SRC from "constants/global";
+import { PROFILE_SRC } from "constants/global";
 import { format } from "date-fns";
 
 interface Props {
