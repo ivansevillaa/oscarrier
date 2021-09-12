@@ -1,0 +1,198 @@
+---
+title: "Como Funcionan los Tests en JavaScript"
+date: "2021-09-15"
+summary: "Es difícil convertirse en una experto de algo si no sabés cómo funciona realmente. Entonces, en este artículo, voy a mostrarte cómo funcionan las assertions libraries y los testing frameworks mientras construimos uno pequeño."
+cover: "/images/posts/test-fundamentals/cover.jpg"
+blurHash: "LNJ+x~H@^+tQ~pInE2-qD$IoE2xZ"
+slug: "test-fundamentals"
+---
+
+En este artículo vamos a cubrir los fundamentos del testing, no vamos a aprender un framework como jest o mocha, sino que vamos a ir más profundo y vamos a crear nuestra propia versión de un **test framework** y una **assertion library** para realmente entender los fundamentos del mundo del testing. También, voy a explicarte la diferencia entre los test frameworks y las assertion libraries. Por lo tanto no te preocupes sobre estos términos si todavía no los conocés, porque al final de este artículo vas a entender estos conceptos y más.
+
+Entonces, empecemos con lo más básico de como funcionan el testing. En simples palabras, un test es un <Highlighted text="if statement" /> que arroja un error si algo ocurre de una forma diferente a lo esperado.
+
+Por supuesto existen funciones complejas que los resultados dependen de otra cosa, pero es realmente fácil testear funciones que siempre retornan lo mismo para una misma entrada. Por ejemplo una función de suma o multiplicación.
+
+Primero, creemos un módulo que luego vamos a testear:
+
+```js:math.js
+/* 
+ acá tenemos un bug en nuestra función multiplicar
+ para demostrar como funcionan los tests
+*/
+
+module.exports = {
+  sum: function (a, b) {
+    return a + b;
+  },
+  multiply: function (a, b) {
+    return a + b;
+  }
+};
+```
+
+Entonces como dijimos antes, un test es un simple <Highlighted text="if statement" /> que compara el valor real y el valor esperado. Entonces ya teniendo claro esto, vamos a testear nuestro módulo.
+
+```js:index.js
+const { multiply, sum } = require("./math");
+
+let actual, expected;
+
+actual = sum(5, 4);
+expected = 9;
+if (actual !== expected) {
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+}
+
+actual = multiply(2, 6);
+expected = 12;
+if (actual !== expected) {
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+}
+```
+
+Si corremos este test, en la consola podemos ver algo como esto:
+
+```bash
+$ node index.js
+/Users/oscarrier/test-example/index.js:14
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+  ^
+
+Error: ❌ FAIL: Expected 12 and received 8
+    at Object.<anonymous> (/Users/oscarrier/test-example/index.js:14:9)
+    at Module._compile (internal/modules/cjs/loader.js:1085:14)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+    at Module.load (internal/modules/cjs/loader.js:950:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:76:12)
+    at internal/main/run_main_module.js:17:47
+```
+
+Tremendo, acabamos de crear dos <Highlighted text="assertions" />. Y capaz te estás preguntando, qué es una assetion? Bueno, es como una comparación que nos permite testear valores. Entonces podemos decir que una assertion es una comparación que será verdadera al menos que tengamos un bug en lo que estemos testeando.
+
+Pero estamos repitiendo código. Encapsulemos esos if statements en algo llamado <Highlighted text="assertion library" />. Una assertion library no es más que una función que recibe el valor real y retorna un objeto con varias assertions (comparaciones) que reciben el valor esperado, arrojando un error si la assertion falla. Esto hace mucho mas fácil testear nuestro código, porque no tenemos que hacer miles de if statements. Creemos una llamada expect con algunas assertions:
+
+```js:index.js
+function expect(actual) {
+  return {
+    toBe(expected) {
+      if (actual !== expected) {
+        throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+      }
+    },
+    toBeGreaterThan(expected) {
+      if (actual <= expected) {
+        throw new Error(`❌ FAIL: ${actual} is not greater than ${expected}`);
+      }
+    }
+  };
+}
+```
+
+Y despúes implementemosla:
+
+```js{3,7}:index.js
+actual = sum(5, 4);
+expected = 9;
+ expect(actual).toBe(expected);
+
+actual = multiply(2, 6);
+expected = 12;
+ expect(actual).toBe(expected);
+```
+
+Si corremos el test, nada cambia:
+
+```bash
+$ node index.js
+/Users/oscarrier/test-example/index.js:14
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+  ^
+
+Error: ❌ FAIL: Expected 12 and received 8
+    at Object.<anonymous> (/Users/oscarrier/test-example/index.js:14:9)
+    at Module._compile (internal/modules/cjs/loader.js:1085:14)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+    at Module.load (internal/modules/cjs/loader.js:950:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:76:12)
+    at internal/main/run_main_module.js:17:47
+```
+
+Ahora es el turno de crear un <Highlighted text="testing framework" />, estos son usados para organizar y ejecutar nuestros tests. Entonces creemos uno:
+
+```js:index.js
+function test(title, callback) {
+  try {
+    callback();
+    console.log(`✅ PASS: ${title}`);
+  } catch (error) {
+    console.error(`❌ FAIL: ${title}`);
+    console.error(error);
+  }
+}
+```
+
+No es más que una funcionan que recibe un título y un callback que será nuestro test. Necesitamos un bloque try-catch porque el test podría fallar si nuestra assertion library arroja un error y queremos catchear ese error para poder mostrarlo en la consola y continuar corriendo el resto de los tests. Pero si la assertion no falla vamos a ver en la consola que el test pasó. Implementemoslo:
+
+```js{1,5,7,11}:index.js
+ test("should add", function () {
+  const actual = sum(5, 4);
+  const expected = 9;
+  expect(actual).toBe(expected);
+ });
+
+ test("should multiply", function () {
+  const actual = multiply(2, 6);
+  const expected = 12;
+  expect(actual).toBe(expected);
+ });
+```
+
+Después de ejecutarlo:
+
+```bash
+$ node index.js
+✅ PASS: should add
+❌ FAIL: should multiply
+Error: ❌ FAIL: Expected 12 and received 8
+    at Object.toBe (/Users/oscarrier/test-example/index.js:29:15)
+    at /Users/oscarrier/test-example/index.js:12:18
+    at test (/Users/oscarrier/test-example/index.js:17:5)
+    at Object.<anonymous> (/Users/oscarrier/test-example/index.js:9:1)
+    at Module._compile (internal/modules/cjs/loader.js:1085:14)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+    at Module.load (internal/modules/cjs/loader.js:950:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:76:12)
+    at internal/main/run_main_module.js:17:47
+```
+
+Si te estás preguntando, que pasa si tenemos código asíncrono. Bueno para soportar esto necesitamos agregar un <Highlighted text="await" /> al callback en nuestra función <Highlighted text="test" /> y hacer asíncrona esta función:
+
+```js{3}:index.js
+async function test(title, callback) {
+  try {
+     await callback();
+    console.log(`✅ PASS: ${title}`);
+  } catch (error) {
+    console.error(`❌ FAIL: ${title}`);
+    console.error(error.message);
+  }
+}
+```
+
+Y si el usuario quiere testear algo asíncrono solo debería pasar como callback una función asíncrona, y usar await cuando sea necesario. Por ejemplo:
+
+```js
+test("should do something async", async function () {
+  const actual = await somethingAsync("hello");
+  const expected = blabla;
+  expect(actual).toBe(expected);
+});
+```
+
+Perfecto, creamos nuestro testing framework y también una assertion library, felicitaciones 🥳. Podes chequear lo que construimos en [este sandbox.](https://codesandbox.io/s/determined-dawn-0orti?file=/index.js) También, entendimos como funcionan estas herramientas por debajo y aprendimos los fundamentos del testing.
+
+Por supuesto, existen muchisimos conceptos y cosas que no cubrimos en este artículo, pero acordate que esto solo fue una intro a los fundamentos. *Keep learning*, nos vemos 👋

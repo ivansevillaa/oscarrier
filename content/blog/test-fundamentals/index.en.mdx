@@ -1,0 +1,198 @@
+---
+title: "How Test Works in JavaScript"
+date: "2021-09-15"
+summary: "Is difficult to become an expert in something if you don't know how really works under the hood. So, in this post, I'll show you how assertions libraries and testing frameworks work in JavaScript meanwhile we build a little one."
+cover: "/images/posts/test-fundamentals/cover.jpg"
+blurHash: "LNJ+x~H@^+tQ~pInE2-qD$IoE2xZ"
+slug: "test-fundamentals"
+---
+
+In this post we'll cover the foundations of testing, but we won't learn a test framework like jest or mocha, we'll go deeper and we'll create our little version of a **test framework** and **assertion library** to really understand the foundation of the testing world. Also, I'll explain the difference between test framework and assertion library, so don't worry about these terms if you don't know them yet, because at the end of the post you'll understand all these concepts and more.
+
+So, let's get started with the most foundation of how testing works. In simple words, a test is an <Highlighted text="if statement" /> that throws an error if something happens differently than expected.
+
+Of course exists complex functions that the results depend on other things, but is really easy to test functions that always return the same output for a given input. For example a sum or multiplication function.
+
+First, create a module that we'll test later:
+
+```js:math.js
+/* 
+ here we have a bug in our multiply
+ function to demostrate how test works
+*/
+
+module.exports = {
+  sum: function (a, b) {
+    return a + b;
+  },
+  multiply: function (a, b) {
+    return a + b;
+  }
+};
+```
+
+So like I said before a test is a simple <Highlighted text="if statement" /> that compare an actual value and an expected value, so let's test our math module:
+
+```js:index.js
+const { multiply, sum } = require("./math");
+
+let actual, expected;
+
+actual = sum(5, 4);
+expected = 9;
+if (actual !== expected) {
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+}
+
+actual = multiply(2, 6);
+expected = 12;
+if (actual !== expected) {
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+}
+```
+
+If we run than test, in the console we can see something like this:
+
+```bash
+$ node index.js
+/Users/oscarrier/test-example/index.js:14
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+  ^
+
+Error: ❌ FAIL: Expected 12 and received 8
+    at Object.<anonymous> (/Users/oscarrier/test-example/index.js:14:9)
+    at Module._compile (internal/modules/cjs/loader.js:1085:14)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+    at Module.load (internal/modules/cjs/loader.js:950:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:76:12)
+    at internal/main/run_main_module.js:17:47
+```
+
+Amazing, we just have created two <Highlighted text="assertions" />. And now maybe you are wondering what is an assertion. Well, it is like a comparison or a matcher that lets us test values. So we can say that an assertion is an if statement that will be true unless there is a bug in the module that we are testing.
+
+But we can see that we are repeating code. So, let's encapsulate that if statements in something called <Highlighted text="assertion library" />. An assertion library is not more than a function that receives an actual value and returns an object with multiple assertions or matches that receive the expected value throwing an error if the assertion fails. This makes it a lot easier to test our code, so we don't have to do thousands of if statements. Let's create one called expect with some assertions:
+
+```js:index.js
+function expect(actual) {
+  return {
+    toBe(expected) {
+      if (actual !== expected) {
+        throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+      }
+    },
+    toBeGreaterThan(expected) {
+      if (actual <= expected) {
+        throw new Error(`❌ FAIL: ${actual} is not greater than ${expected}`);
+      }
+    }
+  };
+}
+```
+
+And then implement it:
+
+```js{3,7}:index.js
+actual = sum(5, 4);
+expected = 9;
+ expect(actual).toBe(expected);
+
+actual = multiply(2, 6);
+expected = 12;
+ expect(actual).toBe(expected);
+```
+
+If we run the test, nothing change:
+
+```bash
+$ node index.js
+/Users/oscarrier/test-example/index.js:14
+  throw new Error(`❌ FAIL: Expected ${expected} and received ${actual}`);
+  ^
+
+Error: ❌ FAIL: Expected 12 and received 8
+    at Object.<anonymous> (/Users/oscarrier/test-example/index.js:14:9)
+    at Module._compile (internal/modules/cjs/loader.js:1085:14)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+    at Module.load (internal/modules/cjs/loader.js:950:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:76:12)
+    at internal/main/run_main_module.js:17:47
+```
+
+Now is time to create our <Highlighted text="testing framework" />, a testing framework is used to organize and execute tests. So let's create one:
+
+```js:index.js
+function test(title, callback) {
+  try {
+    callback();
+    console.log(`✅ PASS: ${title}`);
+  } catch (error) {
+    console.error(`❌ FAIL: ${title}`);
+    console.error(error);
+  }
+}
+```
+
+Is not more than a function that received a title and a callback that will be our test. We need a try-catch block because the test could fail if our assertion library throws an error and we want to catch that error to show in the console and continuos executing the rest of the tests. But if the assertion doesn't fail will see in the console that our test pass. Let's implement it:
+
+```js{1,5,7,11}:index.js
+ test("should add", function () {
+  const actual = sum(5, 4);
+  const expected = 9;
+  expect(actual).toBe(expected);
+ });
+
+ test("should multiply", function () {
+  const actual = multiply(2, 6);
+  const expected = 12;
+  expect(actual).toBe(expected);
+ });
+```
+
+The output:
+
+```bash
+$ node index.js
+✅ PASS: should add
+❌ FAIL: should multiply
+Error: ❌ FAIL: Expected 12 and received 8
+    at Object.toBe (/Users/oscarrier/test-example/index.js:29:15)
+    at /Users/oscarrier/test-example/index.js:12:18
+    at test (/Users/oscarrier/test-example/index.js:17:5)
+    at Object.<anonymous> (/Users/oscarrier/test-example/index.js:9:1)
+    at Module._compile (internal/modules/cjs/loader.js:1085:14)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+    at Module.load (internal/modules/cjs/loader.js:950:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:76:12)
+    at internal/main/run_main_module.js:17:47
+```
+
+If you are wondering, what abour asynchronous code, well to support that we just need to add an await to the callback in our test function and make this function async:
+
+```js{3}:index.js
+async function test(title, callback) {
+  try {
+     await callback();
+    console.log(`✅ PASS: ${title}`);
+  } catch (error) {
+    console.error(`❌ FAIL: ${title}`);
+    console.error(error.message);
+  }
+}
+```
+
+And if the user needs to test something asynchronous they just pass as callback an async function, and use await when is neccesary, for example:
+
+```js
+test("should do something async", async function () {
+  const actual = await somethingAsync("hello");
+  const expected = blabla;
+  expect(actual).toBe(expected);
+});
+```
+
+Amazing we just have created our own testing framework and assertion library, congratulations 🥳. You can check what are we building in [this sandbox.](https://codesandbox.io/s/determined-dawn-0orti?file=/index.js) Also, you understand how these tools work under the hood and learned the foundations of testing.
+
+Of course, exists a bunch of concepts and things that we don't cover in this post, but remember this only was an intro to the foundations. Keep learning, see you 👋
