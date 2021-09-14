@@ -69,7 +69,7 @@ Error: ❌ FAIL: Expected 12 and received 8
     at internal/main/run_main_module.js:17:47
 ```
 
-Tremendo, acabamos de crear dos <Highlighted text="assertions" />. Y capaz te estás preguntando, qué es una assetion? Bueno, es como una comparación que nos permite testear valores. Entonces podemos decir que una assertion es una comparación que será verdadera al menos que tengamos un bug en lo que estemos testeando.
+Tremendo, acabamos de crear dos <Highlighted text="assertions" />. Y capaz te estás preguntando, qué es una assertion? Bueno, es como una comparación que nos permite testear valores. Entonces podemos decir que una assertion es una comparación que será verdadera al menos que tengamos un bug en lo que estemos testeando.
 
 Pero estamos repitiendo código. Encapsulemos esos if statements en algo llamado <Highlighted text="assertion library" />. Una assertion library no es más que una función que recibe el valor real y retorna un objeto con varias assertions (comparaciones) que reciben el valor esperado, arrojando un error si la assertion falla. Esto hace mucho mas fácil testear nuestro código, porque no tenemos que hacer miles de if statements. Creemos una llamada expect con algunas assertions:
 
@@ -134,7 +134,7 @@ function test(title, callback) {
 }
 ```
 
-No es más que una funcionan que recibe un título y un callback que será nuestro test. Necesitamos un bloque try-catch porque el test podría fallar si nuestra assertion library arroja un error y queremos catchear ese error para poder mostrarlo en la consola y continuar corriendo el resto de los tests. Pero si la assertion no falla vamos a ver en la consola que el test pasó. Implementemoslo:
+No es más que una función que recibe un título y un callback que será nuestro test. Necesitamos un bloque try-catch porque el test podría fallar si nuestra assertion library arroja un error y queremos catchear ese error para poder mostrarlo en la consola y continuar corriendo el resto de los tests. Pero si la assertion no falla vamos a ver en la consola que el test pasó. Implementemoslo:
 
 ```js{1,5,7,11}:index.js
  test("should add", function () {
@@ -183,7 +183,7 @@ async function test(title, callback) {
 }
 ```
 
-Y si el usuario quiere testear algo asíncrono solo debería pasar como callback una función asíncrona, y usar await cuando sea necesario. Por ejemplo:
+Y si queremos testear algo asíncrono solo tenemos que pasar como callback una función asíncrona, y usar await cuando sea necesario. Por ejemplo:
 
 ```js
 test("should do something async", async function () {
