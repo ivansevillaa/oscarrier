@@ -4,14 +4,6 @@ import {
 import useTranslation from "next-translate/useTranslation";
 import { TwitterShareButton } from "react-share";
 
-function generateDiscussUrl(slug: string) {
-  // TODO: move this to a constant o .env file
-  return `https://twitter.com/search?q=${encodeURIComponent(
-    // TODO: maybe is better pass the route as params using useRouter
-    `https://oscarrier.me/blog/${slug}`
-  )}`;
-}
-
 function generateEditUrl(slug: string) {
   // TODO: add locale, and pass the route as params using useRouter
   return `https://github.com/ivansevillaa/oscarrier/edit/main/content/blog/${slug}/index.en.mdx`;
@@ -31,17 +23,17 @@ function PostFooter({ slug, title }: Props) {
       <List>
         <ListItem mb="2">
           {/* TODO: create a base style for Link */}
-          <Link
-            href={generateDiscussUrl(slug)}
-            isExternal
-            color="teal.500"
+          {/* TODO: use useRouter, move via to a constant */}
+          <TwitterShare
+            url={`https://oscarrier.me/blog/${slug}`}
+            title={title}
+            via="oscarrier"
+            resetButtonStyle={false}
             fontSize="lg"
-            _hover={{
-              textTransform: "none"
-            }}
+            color="teal.500"
           >
-            {t("discussTw")}
-          </Link>
+            {t("shareTw")}
+          </TwitterShare>
           <Box as="span">
             {" • "}
           </Box>
@@ -58,17 +50,6 @@ function PostFooter({ slug, title }: Props) {
           </Link>
         </ListItem>
       </List>
-      {/* TODO: use useRouter, move via to a constant */}
-      {/* TODO: add styles */}
-      <TwitterShare
-        url={`https://oscarrier.me/blog/${slug}`}
-        title={title}
-        via="oscarrier"
-        resetButtonStyle={false}
-        fontSize="lg"
-      >
-        {t("shareTw")}
-      </TwitterShare>
     </Box>
   );
 }
