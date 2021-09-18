@@ -1,4 +1,9 @@
 {
+  "name": "oscarrier",
+  "private": true,
+  "author": "Ivan Sevilla",
+  "repository": "https://github.com/ivansevillaa/oscarrier",
+  "license": "MIT",
   "scripts": {
     "dev": "next",
     "start": "next start",
