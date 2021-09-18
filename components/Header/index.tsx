@@ -1,4 +1,5 @@
 "use strict";
+console.log("jelouu husky");
 
 import Link from "next/link";
 import {
