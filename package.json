@@ -2,7 +2,16 @@
   "scripts": {
     "dev": "next",
     "start": "next start",
-    "build": "next build"
+    "build": "next build",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+    "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|jsx|tsx)\"",
+    "check-types": "tsc",
+    "format": "yarn prettier -- --write",
+    "check-format": "yarn prettier -- --list-different",
+    "validate": "yarn check-types && yarn check-format && yarn lint && yarn build",
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.11",
@@ -36,10 +45,14 @@
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.24.0",
     "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^7.0.2",
+    "pinst": "^2.1.6",
+    "prettier": "^2.4.1",
     "typescript": "^4.2.4"
   }
 }

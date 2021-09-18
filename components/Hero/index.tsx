@@ -1,7 +1,5 @@
 import Image from "next/image";
-import {
-  Box, chakra, Heading, Text
-} from "@chakra-ui/react";
+import {Box, chakra, Heading, Text} from "@chakra-ui/react";
 
 interface Props {
   image: string;
@@ -10,9 +8,7 @@ interface Props {
   description: string;
 }
 
-export default function Hero({
-  image, alt, title, description
-}: Props) {
+export default function Hero({image, alt, title, description}: Props) {
   const NextImage = chakra(Image);
 
   return (
@@ -23,11 +19,7 @@ export default function Hero({
       gridGap="2"
       marginY="16"
     >
-      <Box
-        height="150px"
-        position="relative"
-        width="150px"
-      >
+      <Box height="150px" position="relative" width="150px">
         <NextImage
           src={image}
           alt={alt}
@@ -38,11 +30,7 @@ export default function Hero({
         />
       </Box>
       <Heading as="h1">{title}</Heading>
-      <Text
-        fontSize="xl"
-        maxWidth="50ch"
-        textAlign="center"
-      >
+      <Text fontSize="xl" maxWidth="50ch" textAlign="center">
         {description}
       </Text>
     </chakra.section>
