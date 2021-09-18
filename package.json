@@ -6,8 +6,8 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|jsx|tsx)\"",
     "check-types": "tsc",
-    "format": "yarn prettier -- --write",
-    "check-format": "yarn prettier -- --list-different",
+    "format": "yarn prettier --write",
+    "check-format": "yarn prettier --list-different",
     "validate": "npm-run-all --parallel check-types check-format lint build",
     "prepare": "husky install"
   },
