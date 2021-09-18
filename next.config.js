@@ -1,10 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nextTranslate = require("next-translate");
 
 // set LD_LIBRARY_PATH properly for all instances of the Vercel processes that are spawned,
 // not just the initial buildscript.
 if (
-  process.env.LD_LIBRARY_PATH == null
-  || !process.env.LD_LIBRARY_PATH.includes(
+  process.env.LD_LIBRARY_PATH == null ||
+  !process.env.LD_LIBRARY_PATH.includes(
     `${process.env.PWD}/node_modules/canvas/build/Release:`
   )
 ) {
@@ -14,9 +15,5 @@ if (
 }
 
 module.exports = {
-  ...nextTranslate(),
-  // TODO: remove this in the creation of the post
-  images: {
-    domains: ["sigdeletras.com", "res.cloudinary.com"]
-  }
+  ...nextTranslate()
 };

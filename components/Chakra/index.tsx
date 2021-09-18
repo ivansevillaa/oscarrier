@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import {ReactNode} from "react";
 import {
   ChakraProvider,
   cookieStorageManager,
@@ -11,10 +11,11 @@ interface Props {
   children: ReactNode;
 }
 
-export default function Chakra({ cookies, children }: Props) {
-  const colorModeManager = typeof cookies == "string"
-    ? cookieStorageManager(cookies)
-    : localStorageManager;
+export default function Chakra({cookies, children}: Props): JSX.Element {
+  const colorModeManager =
+    typeof cookies === "string"
+      ? cookieStorageManager(cookies)
+      : localStorageManager;
 
   return (
     <ChakraProvider theme={theme} colorModeManager={colorModeManager}>

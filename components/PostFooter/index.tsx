@@ -1,8 +1,6 @@
-import {
-  Box, Link, List, ListItem, chakra
-} from "@chakra-ui/react";
+import {Box, Link, List, ListItem, chakra} from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
-import { TwitterShareButton } from "react-share";
+import {TwitterShareButton} from "react-share";
 
 function generateEditUrl(slug: string) {
   // TODO: add locale, and pass the route as params using useRouter
@@ -14,8 +12,8 @@ interface Props {
   title: string;
 }
 
-function PostFooter({ slug, title }: Props) {
-  const { t } = useTranslation("post");
+function PostFooter({slug, title}: Props): JSX.Element {
+  const {t} = useTranslation("post");
   const TwitterShare = chakra(TwitterShareButton);
 
   return (
@@ -34,9 +32,7 @@ function PostFooter({ slug, title }: Props) {
           >
             {t("shareTw")}
           </TwitterShare>
-          <Box as="span">
-            {" • "}
-          </Box>
+          <Box as="span">{" • "}</Box>
           <Link
             href={generateEditUrl(slug)}
             isExternal

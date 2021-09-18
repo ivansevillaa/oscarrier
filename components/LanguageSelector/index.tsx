@@ -1,16 +1,14 @@
-import { ChangeEvent } from "react";
-import { useRouter } from "next/router";
+import {ChangeEvent} from "react";
+import {useRouter} from "next/router";
 import useTranslation from "next-translate/useTranslation";
-import { Select } from "@chakra-ui/react";
+import {Select} from "@chakra-ui/react";
 
-export default function LanguageSelector() {
-  const {
-    locales, locale: currentLocale, asPath, push
-  } = useRouter();
-  const { t } = useTranslation("common");
+export default function LanguageSelector(): JSX.Element {
+  const {locales, locale: currentLocale, asPath, push} = useRouter();
+  const {t} = useTranslation("common");
 
   function handleLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
-    push(asPath, asPath, { locale: event.target.value });
+    push(asPath, asPath, {locale: event.target.value});
   }
 
   return (
@@ -19,7 +17,7 @@ export default function LanguageSelector() {
       defaultValue={currentLocale}
       onChange={handleLanguageChange}
     >
-      {locales?.map((locale) => (
+      {locales?.map(locale => (
         <option key={locale} value={locale}>
           {t(`${locale}`)}
         </option>

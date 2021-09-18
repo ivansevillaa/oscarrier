@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import {useEffect} from "react";
+import {useRouter} from "next/router";
 import Chakra from "@components/Chakra";
-import { pageview } from "@utils/gtag";
+import {pageview} from "@utils/gtag";
 
-import type { AppProps } from "next/app";
+import type {AppProps} from "next/app";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({Component, pageProps}: AppProps): JSX.Element {
   const router = useRouter();
 
   useEffect(() => {

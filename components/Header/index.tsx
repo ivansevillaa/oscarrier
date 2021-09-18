@@ -1,6 +1,3 @@
-"use strict";
-console.log("jelouu husky");
-
 import Link from "next/link";
 import {
   IconButton,
@@ -12,7 +9,7 @@ import {
 import {MoonIcon, SunIcon} from "@chakra-ui/icons";
 import useTranslation from "next-translate/useTranslation";
 
-export default function Header() {
+export default function Header(): JSX.Element {
   const {colorMode, toggleColorMode} = useColorMode();
   const {t} = useTranslation("common");
 
@@ -20,9 +17,9 @@ export default function Header() {
     <chakra.header alignItems="center" display="flex" gridGap="6" height="20">
       <IconButton
         aria-label={`Toogle color mode to ${
-          colorMode == "light" ? "dark" : "light"
+          colorMode === "light" ? "dark" : "light"
         }`}
-        icon={colorMode == "light" ? <MoonIcon /> : <SunIcon />}
+        icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
         onClick={toggleColorMode}
       />
       <nav>

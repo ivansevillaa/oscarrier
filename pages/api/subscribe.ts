@@ -1,10 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type {NextApiRequest, NextApiResponse} from "next";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { email } = req.body;
+export default async function Subscribe(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<void> {
+  const {email} = req.body;
 
   if (!email) {
-    return res.status(400).json({ error: "Email is required" });
+    return res.status(400).json({error: "Email is required"});
   }
 
   try {
@@ -13,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const response = await fetch(
       "https://api.buttondown.email/v1/subscribers",
       {
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({email}),
         headers: {
           Authorization: `Token ${API_KEY}`,
           "Content-Type": "application/json"
@@ -29,8 +32,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    return res.status(201).json({ error: "", errCode: "" });
+    return res.status(201).json({error: "", errCode: ""});
   } catch (error) {
-    return res.status(500).json({ error: error.message || error.toString(), errCode: "ERR-50X" });
+    return res.status(500).json({error, errCode: "ERR-50X"});
   }
-};
+}

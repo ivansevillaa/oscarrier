@@ -8,7 +8,12 @@ interface Props {
   description: string;
 }
 
-export default function Hero({image, alt, title, description}: Props) {
+export default function Hero({
+  image,
+  alt,
+  title,
+  description
+}: Props): JSX.Element {
   const NextImage = chakra(Image);
 
   return (

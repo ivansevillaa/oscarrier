@@ -1,9 +1,17 @@
-import { ThemeComponentProps } from "@chakra-ui/react";
-import { mode } from "@chakra-ui/theme-tools";
+import {ChakraProps, ThemeComponentProps} from "@chakra-ui/react";
+import {mode} from "@chakra-ui/theme-tools";
+
+interface CardStyles {
+  article: ChakraProps;
+  anchor: ChakraProps;
+  imageWrapper: ChakraProps;
+  image: ChakraProps;
+  infoWrapper: ChakraProps;
+}
 
 const Card = {
   parts: ["article", "anchor", "imageWrapper", "image", "infoWrapper"],
-  baseStyle: (props: ThemeComponentProps) => ({
+  baseStyle: (props: ThemeComponentProps): CardStyles => ({
     article: {
       bg: mode("white", "gray.700")(props),
       borderRadius: "lg",
@@ -55,24 +63,24 @@ const Card = {
     },
     wide: {
       article: {
-        flexBasis: { base: "300px", md: "100%" },
-        flexDirection: { base: "column", md: "row" }
+        flexBasis: {base: "300px", md: "100%"},
+        flexDirection: {base: "column", md: "row"}
       },
       anchor: {
-        flexDirection: { base: "column", md: "row" },
+        flexDirection: {base: "column", md: "row"},
         width: "100%"
       },
       imageWrapper: {
-        flex: { md: "1 1 auto" },
-        height: { base: "200px", md: "auto" }
+        flex: {md: "1 1 auto"},
+        height: {base: "200px", md: "auto"}
       },
       image: {
-        borderTopRightRadius: { base: "lg", md: 0 },
-        borderBottomLeftRadius: { base: 0, md: "lg" }
+        borderTopRightRadius: {base: "lg", md: 0},
+        borderBottomLeftRadius: {base: 0, md: "lg"}
       },
       infoWrapper: {
-        flexBasis: { md: "360px" },
-        flexGrow: { base: 1, md: 0 }
+        flexBasis: {md: "360px"},
+        flexGrow: {base: 1, md: 0}
       }
     }
   },

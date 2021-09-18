@@ -1,10 +1,10 @@
-import { Text, useColorModeValue } from "@chakra-ui/react";
+import {Text, useColorModeValue} from "@chakra-ui/react";
 
 interface Props {
   text: string;
 }
 
-function Highlighted({ text }: Props) {
+function Highlighted({text}: Props): JSX.Element {
   const bg = useColorModeValue("gray.200", "gray.700");
 
   return (

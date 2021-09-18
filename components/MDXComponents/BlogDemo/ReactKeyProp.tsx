@@ -1,29 +1,36 @@
-import { useState } from "react";
+import {useState} from "react";
 import useTranslation from "next-translate/useTranslation";
 import {
-  Box, Button, Input, ListItem, Text, UnorderedList
+  Box,
+  Button,
+  Input,
+  ListItem,
+  Text,
+  UnorderedList
 } from "@chakra-ui/react";
 
-function IndexKeyToTheEnd() {
+function IndexKeyToTheEnd(): JSX.Element {
   const [counter, setCounter] = useState(1);
-  const [list, setList] = useState([{ id: counter }]);
-  const { t } = useTranslation("post-demo");
+  const [list, setList] = useState([{id: counter}]);
+  const {t} = useTranslation("post-demo");
 
   const addToEnd = () => {
     setCounter(counter + 1);
-    const newList = [...list, { id: counter + 1 }];
+    const newList = [...list, {id: counter + 1}];
     setList(newList);
   };
 
   const remove = () => {
     setCounter(1);
-    setList([{ id: 1 }]);
+    setList([{id: 1}]);
   };
 
   return (
     <Box d="flex" flexDir="column" alignItems="center">
       <Box as="span">
-        <Button mr="2" onClick={addToEnd}>{t("toEndBtn")}</Button>
+        <Button mr="2" onClick={addToEnd}>
+          {t("toEndBtn")}
+        </Button>
         <Button onClick={remove} disabled={list.length === 1}>
           {t("removeAll")}
         </Button>
@@ -41,26 +48,28 @@ function IndexKeyToTheEnd() {
   );
 }
 
-function IndexKeyToStart() {
+function IndexKeyToStart(): JSX.Element {
   const [counter, setCounter] = useState(1);
-  const [list, setList] = useState([{ id: counter }]);
-  const { t } = useTranslation("post-demo");
+  const [list, setList] = useState([{id: counter}]);
+  const {t} = useTranslation("post-demo");
 
   const addToStart = () => {
     setCounter(counter + 1);
-    const newList = [{ id: counter + 1 }, ...list];
+    const newList = [{id: counter + 1}, ...list];
     setList(newList);
   };
 
   const remove = () => {
     setCounter(1);
-    setList([{ id: 1 }]);
+    setList([{id: 1}]);
   };
 
   return (
     <Box d="flex" flexDir="column" alignItems="center">
       <Box as="span">
-        <Button mr="2" onClick={addToStart}>{t("toStartBtn")}</Button>
+        <Button mr="2" onClick={addToStart}>
+          {t("toStartBtn")}
+        </Button>
         <Button onClick={remove} disabled={list.length === 1}>
           {t("removeAll")}
         </Button>
@@ -78,32 +87,34 @@ function IndexKeyToStart() {
   );
 }
 
-function IDKeyToStart() {
+function IDKeyToStart(): JSX.Element {
   const [counter, setCounter] = useState(1);
-  const [list, setList] = useState([{ id: counter }]);
-  const { t } = useTranslation("post-demo");
+  const [list, setList] = useState([{id: counter}]);
+  const {t} = useTranslation("post-demo");
 
   const addToStart = () => {
     setCounter(counter + 1);
-    const newList = [{ id: counter + 1 }, ...list];
+    const newList = [{id: counter + 1}, ...list];
     setList(newList);
   };
 
   const remove = () => {
     setCounter(1);
-    setList([{ id: 1 }]);
+    setList([{id: 1}]);
   };
 
   return (
     <Box d="flex" flexDir="column" alignItems="center">
       <Box as="span">
-        <Button mr="2" onClick={addToStart}>{t("toStartBtn")}</Button>
+        <Button mr="2" onClick={addToStart}>
+          {t("toStartBtn")}
+        </Button>
         <Button onClick={remove} disabled={list.length === 1}>
           {t("removeAll")}
         </Button>
       </Box>
       <UnorderedList>
-        {list.map((item) => (
+        {list.map(item => (
           <ListItem alignItems="center" d="flex" my="5" key={item.id}>
             <Text mr="2">{item.id}</Text>
             <Input maxW="500" />
@@ -114,4 +125,4 @@ function IDKeyToStart() {
   );
 }
 
-export { IndexKeyToTheEnd, IndexKeyToStart, IDKeyToStart };
+export {IndexKeyToTheEnd, IndexKeyToStart, IDKeyToStart};

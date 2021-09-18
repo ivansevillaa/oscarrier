@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import {css} from "@emotion/react";
 
 // TODO: add theme for sizes, etc
 export default css`
@@ -157,7 +157,7 @@ export default css`
     border-radius: 5px 5px 0 0;
     color: #fff;
     font-weight: bold;
-    padding: 12px 20px
+    padding: 12px 20px;
   }
 
   .mdx-marker {

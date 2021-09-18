@@ -7,20 +7,8 @@ interface Props {
   height: number;
 }
 
-function Image({
-  src,
-  alt,
-  width = 840,
-  height
-}: Props) {
-  return (
-    <NextImage
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-    />
-  );
+function Image({src, alt, width = 840, height}: Props): JSX.Element {
+  return <NextImage src={src} alt={alt} width={width} height={height} />;
 }
 
 export default Image;

@@ -1,23 +1,24 @@
-import { ReactNode } from "react";
+import {ReactNode} from "react";
 import Head from "next/head";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
-import { chakra, Flex, Divider } from "@chakra-ui/react";
-import { CustomMeta, Meta } from "@ts/meta";
+import {chakra, Flex, Divider} from "@chakra-ui/react";
+import {CustomMeta, Meta} from "@ts/meta";
 
 interface Props {
   children: ReactNode;
   customMeta?: CustomMeta;
 }
 
-export default function Layout({ children, customMeta }: Props) {
-  const { asPath } = useRouter();
+export default function Layout({children, customMeta}: Props): JSX.Element {
+  const {asPath} = useRouter();
 
   // TODO: move to locales files or constant file
   const meta: Meta = {
     title: "Ivan Sevilla",
-    description: "JavaScript developer. I like to create web products and write things that I think are interesting.",
+    description:
+      "JavaScript developer. I like to create web products and write things that I think are interesting.",
     image: "https://www.oscarrier.me/images/profile.jpg",
     type: "website",
     ...customMeta
@@ -32,7 +33,7 @@ export default function Layout({ children, customMeta }: Props) {
       margin="0 auto"
       maxWidth="1140px"
       minHeight="100vh"
-      paddingX={{ base: "4", xl: 0 }}
+      paddingX={{base: "4", xl: 0}}
       marginBottom="14"
     >
       <Head>
