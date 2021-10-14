@@ -3,6 +3,7 @@
     "eslint"
   ],
   "*.+(js|json|ts|tsx)": [
-    "prettier --write"
+    "prettier --write",
+    "jest --findRelatedTests --coverage"
   ]
 }
