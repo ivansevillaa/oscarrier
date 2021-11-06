@@ -63,7 +63,9 @@ export default function Subscribe(): JSX.Element {
       </Heading>
       <Text marginBottom="4">{t("newsletterDescription")}</Text>
       <form onSubmit={handleSubmit(subscribe)}>
+        <label htmlFor="email">Email</label>
         <Input
+          id="email"
           isInvalid={petition.state === "rejected"}
           type="email"
           placeholder={t("newsletterEmail")}

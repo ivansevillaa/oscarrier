@@ -9,6 +9,7 @@
     "airbnb",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jest-dom/recommended",
     "eslint-config-prettier",
     "prettier"
   ],
@@ -20,7 +21,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint/eslint-plugin"],
+  "plugins": ["react", "jest-dom", "@typescript-eslint/eslint-plugin"],
   "rules": {
     "comma-dangle": [2, "never"],
     "import/extensions": [
@@ -31,6 +32,7 @@
     ],
     "import/no-unresolved": 0,
     "import/prefer-default-export": 0,
+    "jsx-a11y/label-has-associated-control": [2, {"assert": "either"}],
     "react/jsx-filename-extension": [2, {"extensions": [".tsx"]}],
     "react/jsx-props-no-spreading": [2, {"exceptions": ["Component"]}],
     "react/no-danger": 0,

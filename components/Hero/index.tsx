@@ -35,7 +35,7 @@ export default function Hero({
         />
       </Box>
       <Heading as="h1">{title}</Heading>
-      <Text fontSize="xl" maxWidth="50ch" textAlign="center">
+      <Text role="paragraph" fontSize="xl" maxWidth="50ch" textAlign="center">
         {description}
       </Text>
     </chakra.section>

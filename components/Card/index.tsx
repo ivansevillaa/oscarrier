@@ -45,7 +45,7 @@ export default function Card({post, variant}: Props): JSX.Element {
             <Heading fontSize="3xl" marginBottom="3">
               {post.title}
             </Heading>
-            <Text>{post.summary}</Text>
+            <Text role="paragraph">{post.summary}</Text>
           </Box>
         </chakra.a>
       </Link>

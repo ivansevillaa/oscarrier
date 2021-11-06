@@ -2,6 +2,7 @@ import {Box, Link, List, ListItem, chakra} from "@chakra-ui/react";
 import useTranslation from "next-translate/useTranslation";
 import {TwitterShareButton} from "react-share";
 
+// TODO: move this to a util
 function generateEditUrl(slug: string) {
   // TODO: add locale, and pass the route as params using useRouter
   return `https://github.com/ivansevillaa/oscarrier/edit/main/content/blog/${slug}/index.en.mdx`;
