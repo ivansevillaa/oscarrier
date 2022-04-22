@@ -33,17 +33,7 @@ export default function Footer(): JSX.Element {
             {t("github")}
           </a>
         </ListItem>
-        <ListItem>
-          <a
-            href="https://www.buymeacoffee.com/oscarrier"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t("coffee")}
-          </a>
-        </ListItem>
       </List>
-      <LanguageSelector />
     </chakra.footer>
   );
 }
