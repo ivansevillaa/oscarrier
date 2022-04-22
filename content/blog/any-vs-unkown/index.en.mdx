@@ -1,0 +1,59 @@
+---
+title: "TypeScript - Avoid Errors Using Unknown Type"
+date: "2022-04-22"
+summary: "It's common to use any type in typescript when you don't know or you are not sure about the correct type to use. In this post I'll recommend you to use unkown type and explain why is a better approach"
+cover: "/images/posts/any-vs-unkown/cover.jpeg"
+blurHash: "LkKUWdofo~oL~pWBt8j[xuRjaeae"
+slug: "any-vs-unknown"
+---
+
+It's common to use any type in typescript when you don't know or you are not sure about the correct type to use. In this post I'll recommend you to use unkown type and explain why is a better approach.
+
+Let's get started understanding that any type means that the value variable cand hold arbitrary values such as strings, numbers, objects, functions or whatever you want.
+
+```ts
+let value: any;
+value = "hello world";
+value = 1;
+value = {};
+value = [];
+value = undefined;
+value = null;
+value = () => console.log("hello world");
+```
+
+Further we can hold anything, also **we can do anything we want** and here is the problem. Because we can use the value such as a text but actually we are manipulating a number. So we'll have a runtime error without previous advice.
+
+```ts
+let value: any;
+value = "Hello";
+value = 22
+
+const upperCaseText = value.toUpperCase(); // 💥 TypeError: value.toUpperCase is not a function 💥
+console.log(upperCaseText);
+```
+
+Using any type we don't have typescript protections, because **we can hold arbitrary values and do anything we want.** If we really don't know a type for a variable a safer and better approach would be using the <Highlighted text="unknown" /> type.
+
+With <Highlighted text="unknown" /> type we can assign all types to <Highlighted text="unknown" /> just like we can assign all types to <Highlighted text="any" />. The difference is that <Highlighted text="any" /> allow everything and <Highlighted text="unknown" /> allow almost nothing.
+
+<Image src="/images/posts/any-vs-unkown/unknown-error.png" alt="unknown error" height={358} />
+
+Here, <Highlighted text="value" /> is type unknown so we can't call to <Highlighted text="toUpperCase" /> method. We have to narrow the unknown type to something more specific, in this case the type string. We can do this narrowing using the <Highlighted text="typeof" /> operator.
+
+```ts
+let value: unknown;
+value = "Hello world";
+value = undefined;
+
+if (typeof value == "string") {
+  const upperCaseText = value.toUpperCase();
+  console.log(upperCaseText);
+}
+```
+
+So, we are ensuring that the value is an string before use it as a string. The error is go away because in the if statement the value is type unknown but inside is an string, so we can call to <Highlighted text="toUpperCase" /> method without having a runtime error.
+
+## Conclusion
+
+If you don't know the type use unknown and avoid errors that can be avoided 🙂.
